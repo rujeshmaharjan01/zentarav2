@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Package" ADD COLUMN     "category" TEXT NOT NULL DEFAULT 'trek',
+ADD COLUMN     "rating" DOUBLE PRECISION NOT NULL DEFAULT 5,
+ADD COLUMN     "reviewCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "tag" TEXT;
