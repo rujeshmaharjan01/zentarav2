@@ -3,19 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown, MapPin, Utensils, Hotel, Route } from "lucide-react";
-
-interface ItineraryDay {
-  day: number;
-  title: string;
-  description: string;
-  trekTime?: string | null;
-  driveTime?: string | null;
-  accommodation?: string | null;
-  elevation?: string | null;
-  distance?: string | null;
-  meals?: string | null;
-  overnight?: string | null;
-}
+import type { ItineraryDay } from "@/lib/types";
 
 interface ItineraryProps {
   itinerary: ItineraryDay[];

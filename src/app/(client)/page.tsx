@@ -58,7 +58,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative h-[800px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[600px] sm:h-[700px] md:h-[800px] flex items-center justify-center overflow-hidden">
         <video
           autoPlay
           loop
@@ -82,10 +82,10 @@ export default async function HomePage() {
 
         <div className="relative z-10 w-full px-4 text-center">
           <div className="mx-auto max-w-[780px]">
-            <h1 className="text-white text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
+            <h1 className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
               Zentara Travels &amp; Tours
             </h1>
-            <p className="mt-4 text-white/80 text-2xl sm:text-3xl lg:text-4xl font-medium [text-shadow:_0_2px_10px_rgb(0_0_0_/_45%)]">
+            <p className="mt-4 text-white/80 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium [text-shadow:_0_2px_10px_rgb(0_0_0_/_45%)]">
               Find Your Inner Journey
             </p>
 

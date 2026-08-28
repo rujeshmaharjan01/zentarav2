@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
@@ -55,12 +55,12 @@ export default async function AdminDashboardPage() {
           ) : (
             <div className="space-y-4">
               {recentBookings.map((b) => (
-                <div key={b.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
-                  <div>
-                    <p className="font-medium">{b.user.name}</p>
-                    <p className="text-sm text-muted-foreground">{b.package.title}</p>
+                <div key={b.id} className="flex items-center justify-between gap-4 border-b pb-4 last:border-0 last:pb-0">
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{b.user.name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{b.package.title}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="font-medium">${b.totalPrice}</p>
                     <p className="text-sm text-muted-foreground">{b.status}</p>
                   </div>

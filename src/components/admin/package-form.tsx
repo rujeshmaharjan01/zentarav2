@@ -223,7 +223,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
             <Label htmlFor="imageUrl">Image URL</Label>
             <Input id="imageUrl" type="url" value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://..." />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
               <select
@@ -248,7 +248,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
       <Card>
         <CardContent className="pt-6 space-y-4">
           <h2 className="text-lg font-semibold">Pricing & Details</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Price ($) *</Label>
               <Input id="price" type="number" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} required />
@@ -258,7 +258,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
               <Input id="duration" type="number" value={form.duration} onChange={(e) => set("duration", e.target.value)} required />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="maxGroupSize">Max Group Size</Label>
               <Input id="maxGroupSize" type="number" value={form.maxGroupSize} onChange={(e) => set("maxGroupSize", e.target.value)} />
@@ -335,7 +335,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
                         <Label>Description</Label>
                         <Textarea rows={2} value={day.description} onChange={(e) => setDay(i, "description", e.target.value)} />
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-2">
                           <Label>Trek Time</Label>
                           <Input value={day.trekTime} onChange={(e) => setDay(i, "trekTime", e.target.value)} placeholder="5-6 hours" />
@@ -345,7 +345,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
                           <Input value={day.driveTime} onChange={(e) => setDay(i, "driveTime", e.target.value)} placeholder="6-7 hours" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-2">
                           <Label>Elevation</Label>
                           <Input value={day.elevation} onChange={(e) => setDay(i, "elevation", e.target.value)} placeholder="930m" />
@@ -355,7 +355,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
                           <Input value={day.distance} onChange={(e) => setDay(i, "distance", e.target.value)} placeholder="22 km" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-2">
                           <Label>Accommodation</Label>
                           <Input value={day.accommodation} onChange={(e) => setDay(i, "accommodation", e.target.value)} placeholder="Tea House" />

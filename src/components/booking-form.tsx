@@ -53,7 +53,7 @@ export function BookingForm({ packageId, price }: BookingFormProps) {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div id="booking" className="rounded-xl border bg-card text-card-foreground shadow-sm">
+    <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
       <div className="p-5 border-b">
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold">${price}</span>

@@ -30,9 +30,10 @@ export function HeroSearch() {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition hover:bg-white/90"
+          className="shrink-0 rounded-full bg-white px-3 sm:px-4 py-1.5 text-sm font-medium text-black transition hover:bg-white/90"
         >
-          Search
+          <span className="hidden sm:inline">Search</span>
+          <Search className="sm:hidden h-4 w-4" />
         </button>
       </div>
     </form>
