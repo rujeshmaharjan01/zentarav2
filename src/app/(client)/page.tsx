@@ -5,6 +5,8 @@ import { MapPin, Globe, Shield, DollarSign, Phone, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 
+export const dynamic = "force-dynamic";
+
 const features = [
   {
     icon: Globe,
@@ -29,23 +31,30 @@ const features = [
 ];
 
 export default async function HomePage() {
-  const [bestSelling, shortTreks, tours] = await Promise.all([
-    prisma.package.findMany({
-      where: { available: true, category: "trek" },
-      orderBy: { reviewCount: "desc" },
-      take: 3,
-    }),
-    prisma.package.findMany({
-      where: { available: true, category: "trek", duration: { lte: 10 } },
-      orderBy: { duration: "asc" },
-      take: 3,
-    }),
-    prisma.package.findMany({
-      where: { available: true, category: "tour" },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-    }),
-  ]);
+  let bestSelling: any[] = [];
+  let shortTreks: any[] = [];
+  let tours: any[] = [];
+  try {
+    [bestSelling, shortTreks, tours] = await Promise.all([
+      prisma.package.findMany({
+        where: { available: true, category: "trek" },
+        orderBy: { reviewCount: "desc" },
+        take: 3,
+      }),
+      prisma.package.findMany({
+        where: { available: true, category: "trek", duration: { lte: 10 } },
+        orderBy: { duration: "asc" },
+        take: 3,
+      }),
+      prisma.package.findMany({
+        where: { available: true, category: "tour" },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+      }),
+    ]);
+  } catch {
+    // ponytail: DB unavailable at build time on Vercel — fills in at runtime
+  }
 
   return (
     <div className="flex flex-col">
