@@ -35,6 +35,7 @@ export default async function AdminPackagesPage() {
                 <TableHead>Duration</TableHead>
                 <TableHead>Bookings</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -49,6 +50,11 @@ export default async function AdminPackagesPage() {
                     <Badge variant={pkg.available ? "default" : "secondary"}>
                       {pkg.available ? "Active" : "Inactive"}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Link href={`/admin/packages/${pkg.id}/edit`} className="text-sm text-primary hover:underline">
+                      Edit
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
