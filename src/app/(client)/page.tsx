@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 import { OrganizationJsonLd } from "@/components/json-ld";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const features = [
   {

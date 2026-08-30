@@ -21,7 +21,7 @@ import type { ItineraryDay } from "@/lib/types";
 import type { Metadata } from "next";
 import { TouristTripJsonLd } from "@/components/json-ld";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type PageProps = { params: Promise<{ id: string }> };
 

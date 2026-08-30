@@ -3,7 +3,7 @@ import { PackageCard } from "@/components/package-card";
 import { SearchForm } from "./search-form";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Travel Packages - Zentara Travels",
