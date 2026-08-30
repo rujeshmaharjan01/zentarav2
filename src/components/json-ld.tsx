@@ -23,19 +23,22 @@ export function OrganizationJsonLd() {
         description: "Nepal's premier trekking and tour company offering guided treks to Everest Base Camp, Annapurna Circuit, and more.",
         address: {
           "@type": "PostalAddress",
+          streetAddress: "Kirtipur-10",
           addressLocality: "Kathmandu",
+          addressRegion: "Bagmati",
           addressCountry: "NP",
         },
         contactPoint: {
           "@type": "ContactPoint",
-          telephone: "+977-9851402018",
+          telephone: "+977-9761506543",
           contactType: "customer service",
         },
         sameAs: [
-          "https://instagram.com/zentaratravels",
+          "https://www.instagram.com/zentaratravel/",
           "https://facebook.com/zentaratravels",
           "https://x.com/zentaratravels",
           "https://youtube.com/@zentaratravels",
+          "https://wa.me/9779761506543",
         ],
       }}
     />
