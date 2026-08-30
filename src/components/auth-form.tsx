@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 
 interface AuthFormProps {
@@ -54,7 +53,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         </Button>
 
         <div className="relative">
-          <Separator />
+          <div className="h-px w-full bg-border" />
           <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">or</span>
         </div>
 

@@ -37,13 +37,13 @@ export function SectionNav() {
   return (
     <div className="sticky top-16 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="container mx-auto px-4">
-        <nav className="flex gap-1 overflow-x-auto py-2 scrollbar-none">
+        <nav className="flex gap-1 overflow-x-auto py-2 scrollbar-none snap-x snap-mandatory">
           {sections.map((s) => (
             <a
               key={s.id}
               href={`#${s.id}`}
               className={cn(
-                "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-medium transition-colors snap-start",
                 active === s.id
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"

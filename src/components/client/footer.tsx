@@ -44,7 +44,7 @@ export function Footer() {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block">
                     {link.label}
                   </Link>
                 </li>
@@ -58,7 +58,7 @@ export function Footer() {
             <ul className="space-y-2">
               {destinations.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block">
                     {link.label}
                   </Link>
                 </li>
@@ -109,7 +109,7 @@ export function Footer() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors p-2"
                 >
                   {s.label}
                 </a>

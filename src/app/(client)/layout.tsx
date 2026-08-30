@@ -6,7 +6,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <>
       <Navbar />
       <main className="flex-1">{children}</main>
+      <div className="pb-[env(safe-area-inset-bottom)]">
       <Footer />
+      </div>
     </>
   );
 }

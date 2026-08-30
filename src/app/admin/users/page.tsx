@@ -17,6 +17,7 @@ export default async function AdminUsersPage() {
 
       <Card>
         <CardContent className="pt-6">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -49,6 +50,7 @@ export default async function AdminUsersPage() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

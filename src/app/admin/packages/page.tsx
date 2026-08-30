@@ -26,6 +26,7 @@ export default async function AdminPackagesPage() {
 
       <Card>
         <CardContent className="pt-6">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -52,7 +53,7 @@ export default async function AdminPackagesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/admin/packages/${pkg.id}/edit`} className="text-sm text-primary hover:underline">
+                    <Link href={`/admin/packages/${pkg.id}/edit`} className="text-sm text-primary hover:underline py-2 px-3 -my-2 -mx-3 rounded-md">
                       Edit
                     </Link>
                   </TableCell>
@@ -60,6 +61,7 @@ export default async function AdminPackagesPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -58,6 +58,7 @@ export default function AdminBookingsPage() {
           {loading ? (
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -99,7 +100,7 @@ export default function AdminBookingsPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-7 px-2"
+                              className="h-9 px-3"
                               disabled={updatingId === b.id}
                               onClick={() => updateStatus(b.id, "confirmed")}
                             >
@@ -122,6 +123,7 @@ export default function AdminBookingsPage() {
                 )}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>
