@@ -60,14 +60,15 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <OrganizationJsonLd />
-      <section className="relative h-[600px] sm:h-[700px] md:h-[800px] flex items-center justify-center overflow-hidden">
+      <section aria-labelledby="hero-heading" className="relative min-h-[600px] md:min-h-[800px] flex items-center justify-center">
         <video
           autoPlay
           loop
           muted
           playsInline
           poster="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=1260&h=750&dpr=1"
-          className="absolute inset-0 h-full w-full object-cover hidden md:block"
+          className="absolute inset-0 w-full object-cover hidden md:block"
+          style={{ height: 800 }}
         >
           <source
             src="https://videos.pexels.com/video-files/35850446/15202819_1920_1080_30fps.mp4"
@@ -77,14 +78,16 @@ export default async function HomePage() {
         <img
           src="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=1260&h=750&dpr=1"
           alt="Himalayan sunset panorama"
-          className="absolute inset-0 h-full w-full object-cover md:hidden"
+          className="absolute inset-0 w-full object-cover md:hidden"
+          style={{ height: 800 }}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/40" />
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/60 to-transparent" />
 
         <div className="relative z-10 w-full px-4 text-center">
           <div className="mx-auto max-w-[780px]">
-            <h1 className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
+            <h1 id="hero-heading" className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-7xl lg:whitespace-nowrap font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
               Zentara Travels &amp; Tours
             </h1>
             <p className="mt-4 text-white/80 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium [text-shadow:_0_2px_10px_rgb(0_0_0_/_45%)]">
@@ -118,10 +121,10 @@ export default async function HomePage() {
       </section>
 
       {bestSelling.length > 0 && (
-        <section className="py-16 md:py-24">
+        <section aria-labelledby="best-selling-heading" className="py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 className="text-3xl md:text-4xl font-bold">
+              <h2 id="best-selling-heading" className="text-3xl md:text-4xl font-bold">
                 Our Best Selling Treks
               </h2>
               <p className="text-muted-foreground">
@@ -155,10 +158,10 @@ export default async function HomePage() {
       )}
 
       {shortTreks.length > 0 && (
-        <section className="py-16 md:py-24 bg-muted/50">
+        <section aria-labelledby="short-treks-heading" className="py-16 md:py-24 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 className="text-3xl md:text-4xl font-bold">
+              <h2 id="short-treks-heading" className="text-3xl md:text-4xl font-bold">
                 Short yet Stunning Treks
               </h2>
               <p className="text-muted-foreground">
@@ -192,10 +195,10 @@ export default async function HomePage() {
       )}
 
       {tours.length > 0 && (
-        <section className="py-16 md:py-24">
+        <section aria-labelledby="tours-heading" className="py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 className="text-3xl md:text-4xl font-bold">Tours</h2>
+              <h2 id="tours-heading" className="text-3xl md:text-4xl font-bold">Tours</h2>
               <p className="text-muted-foreground">
                 Exclusive 1 day and multi-day tours
               </p>
@@ -226,9 +229,9 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="py-16 md:py-24 bg-muted/50">
+      <section aria-labelledby="cta-heading" className="py-16 md:py-24 bg-muted/50">
         <div className="container mx-auto px-4 text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold">
             Ready to Start Your Journey?
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">

@@ -55,6 +55,7 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  Destination: 'Destination',
   Package: 'Package',
   Booking: 'Booking',
   Review: 'Review'
@@ -136,11 +137,34 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const DestinationScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  image: 'image',
+  heroImage: 'heroImage',
+  continent: 'continent',
+  highlights: 'highlights',
+  bestTime: 'bestTime',
+  travelTips: 'travelTips',
+  places: 'places',
+  gallery: 'gallery',
+  featured: 'featured',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DestinationScalarFieldEnum = (typeof DestinationScalarFieldEnum)[keyof typeof DestinationScalarFieldEnum]
+
+
 export const PackageScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
   destination: 'destination',
+  destinationId: 'destinationId',
   price: 'price',
   duration: 'duration',
   imageUrl: 'imageUrl',
@@ -167,6 +191,10 @@ export const BookingScalarFieldEnum = {
   guests: 'guests',
   totalPrice: 'totalPrice',
   status: 'status',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  specialRequests: 'specialRequests',
   createdAt: 'createdAt'
 } as const
 

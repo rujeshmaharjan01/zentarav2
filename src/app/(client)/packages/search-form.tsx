@@ -37,7 +37,8 @@ export function SearchForm({ defaultValue = "" }: { defaultValue?: string }) {
           <button
             type="button"
             onClick={handleClear}
-            className="shrink-0 text-muted-foreground hover:text-foreground"
+            aria-label="Clear search"
+            className="shrink-0 text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <X className="h-4 w-4" />
           </button>
@@ -45,7 +46,7 @@ export function SearchForm({ defaultValue = "" }: { defaultValue?: string }) {
       </div>
       <button
         type="submit"
-        className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        className="shrink-0 rounded-lg bg-primary h-11 px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
       >
         Search
       </button>

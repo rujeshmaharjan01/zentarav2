@@ -19,7 +19,7 @@ export function WhyBookUs() {
           </span>
           <div>
             <div className="font-medium text-sm">{r.title}</div>
-            <div className="text-xs text-muted-foreground mt-0.5">{r.desc}</div>
+            <div className="text-sm text-muted-foreground mt-0.5">{r.desc}</div>
           </div>
         </div>
       ))}

@@ -75,42 +75,73 @@ model Verification {
   @@map("verification")
 }
 
+model Destination {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String
+  image       String
+  heroImage   String?
+  continent   String      @default("Asia")
+  highlights  Json        @default("[]")
+  bestTime    String
+  travelTips  String      @default("")
+  places      Json        @default("[]")
+  gallery     Json        @default("[]")
+  featured    Boolean     @default(false)
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  packages    Package[]
+
+  @@map("destination")
+}
+
 model Package {
-  id           String    @id @default(cuid())
-  title        String
-  description  String
-  destination  String
-  price        Float
-  duration     Int
-  imageUrl     String?
-  images       Json      @default("[]")
-  available    Boolean   @default(true)
-  maxGroupSize Int       @default(20)
-  category     String    @default("trek")
-  tag          String?
-  rating       Float     @default(5)
-  reviewCount  Int       @default(0)
-  highlights   Json      @default("[]")
-  itinerary    Json      @default("[]")
-  createdAt    DateTime  @default(now())
-  bookings     Booking[]
-  reviews      Review[]
+  id            String      @id @default(cuid())
+  title         String
+  description   String
+  destination   String
+  destinationId String?
+  price         Float
+  duration      Int
+  imageUrl      String?
+  images        Json        @default("[]")
+  available     Boolean     @default(true)
+  maxGroupSize  Int         @default(20)
+  category      String      @default("trek")
+  tag           String?
+  rating        Float       @default(5)
+  reviewCount   Int         @default(0)
+  highlights    Json        @default("[]")
+  itinerary     Json        @default("[]")
+  createdAt     DateTime    @default(now())
+  bookings      Booking[]
+  reviews       Review[]
+  destinationRel Destination? @relation(fields: [destinationId], references: [id])
+
+  @@index([destinationId])
 }
 
 model Booking {
-  id         String   @id @default(cuid())
-  userId     String
-  packageId  String
-  travelDate DateTime
-  guests     Int      @default(1)
-  totalPrice Float
-  status     String   @default("pending")
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
-  package    Package  @relation(fields: [packageId], references: [id])
+  id             String    @id @default(cuid())
+  userId         String
+  packageId      String
+  travelDate     DateTime
+  guests         Int       @default(1)
+  totalPrice     Float
+  status         String    @default("pending")
+  name           String?
+  email          String?
+  phone          String?
+  specialRequests String?
+  createdAt      DateTime  @default(now())
+  user           User      @relation(fields: [userId], references: [id])
+  package        Package   @relation(fields: [packageId], references: [id])
 
   @@index([userId])
   @@index([packageId])
+  @@index([packageId, travelDate])
 }
 
 model Review {

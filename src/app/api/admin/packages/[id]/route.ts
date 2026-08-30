@@ -1,6 +1,33 @@
 import { prisma } from "@/lib/prisma";
 import { requireAdmin, buildPackageData, PackageSchema } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
+import { z } from "zod";
+
+const ToggleAvailableSchema = z.object({
+  available: z.boolean(),
+});
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { error } = await requireAdmin(request);
+  if (error) return error;
+
+  const parsed = ToggleAvailableSchema.safeParse(await request.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 });
+  }
+
+  try {
+    const { id } = await params;
+    const pkg = await prisma.package.update({ where: { id }, data: { available: parsed.data.available } });
+    return NextResponse.json({ id: pkg.id, available: pkg.available });
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+      return NextResponse.json({ error: "Package not found" }, { status: 404 });
+    }
+    const msg = e instanceof Error ? e.message : "Failed to update package";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdmin(request);

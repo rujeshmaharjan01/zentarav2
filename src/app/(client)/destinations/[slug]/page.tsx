@@ -1,31 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
+import { Highlights } from "@/components/destination/highlights";
+import { Places } from "@/components/destination/places";
+import { TravelTips } from "@/components/destination/travel-tips";
+import { PhotoGallery } from "@/components/destination/photo-gallery";
 import { notFound } from "next/navigation";
+import { Calendar, Globe } from "lucide-react";
 import type { Metadata } from "next";
-
-const destinations: Record<string, { name: string; description: string; image: string }> = {
-  nepal: {
-    name: "Nepal",
-    description: "Home to 8 of the world's 14 peaks over 8,000m, Nepal is the ultimate Himalayan destination. From the legendary Everest Base Camp to the diverse Annapurna Circuit, ancient temples in Kathmandu to jungle safaris in Chitwan — Nepal offers adventure, culture, and spirituality in equal measure.",
-    image: "https://images.pexels.com/photos/6491135/pexels-photo-6491135.jpeg?auto=compress&w=1260&h=750&dpr=1",
-  },
-  bhutan: {
-    name: "Bhutan",
-    description: "The Land of the Thunder Dragon is one of the world's most exclusive travel destinations. With its pristine Himalayan landscapes, ancient Buddhist monasteries, and commitment to Gross National Happiness, Bhutan offers a truly unique travel experience.",
-    image: "https://images.pexels.com/photos/2166553/pexels-photo-2166553.jpeg?auto=compress&w=1260&h=750&dpr=1",
-  },
-  tibet: {
-    name: "Tibet",
-    description: "The Roof of the World beckons with its vast high-altitude plateaus, ancient Buddhist monasteries, and the iconic Mount Everest north face. Tibet is a destination for those seeking profound cultural encounters and dramatic Himalayan scenery.",
-    image: "https://images.pexels.com/photos/36478/amazing-beautiful-beauty-blue.jpg?auto=compress&w=1260&h=750&dpr=1",
-  },
-};
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const dest = destinations[slug];
+  const dest = await prisma.destination.findUnique({ where: { slug } });
   if (!dest) return {};
   return {
     title: `${dest.name} Tours & Treks - Zentara Travels`,
@@ -40,25 +27,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DestinationPage({ params }: PageProps) {
   const { slug } = await params;
-  const dest = destinations[slug];
+
+  const dest = await prisma.destination.findUnique({ where: { slug } });
   if (!dest) notFound();
 
   const packages = await prisma.package.findMany({
-    where: {
-      available: true,
-      destination: { contains: dest.name, mode: "insensitive" },
-    },
+    where: { available: true, destinationId: dest.id },
     orderBy: { reviewCount: "desc" },
   });
+
+  const highlights = dest.highlights as string[];
+  const places = (dest.places as { name: string; description: string; image: string }[]) || [];
+  const gallery = (dest.gallery as string[]) || [];
 
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative h-[300px] sm:h-[400px] flex items-center justify-center overflow-hidden">
-        <img src={dest.image} alt={dest.name} className="absolute inset-0 h-full w-full object-cover" />
+      <section aria-labelledby="dest-hero-heading" className="relative h-[300px] sm:h-[400px] flex items-center justify-center overflow-hidden">
+        <img
+          src={dest.heroImage || dest.image}
+          alt={dest.name}
+          className="absolute inset-0 h-full w-full object-cover"
+          onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-bold [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
+          <h1 id="dest-hero-heading" className="text-white text-4xl sm:text-5xl md:text-6xl font-bold [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
             {dest.name}
           </h1>
           <p className="mt-3 text-white/80 text-lg max-w-2xl mx-auto [text-shadow:_0_2px_10px_rgb(0_0_0_/_45%)]">
@@ -67,10 +61,63 @@ export default async function DestinationPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Packages */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+      <div className="container mx-auto px-4 py-12 md:py-16 space-y-16">
+        {/* Quick Stats */}
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Globe className="h-4 w-4" />
+            <span>{dest.continent}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-4 w-4" />
+            <span>Best Time: {dest.bestTime.split(".")[0]}</span>
+          </div>
+          <span>{packages.length} {packages.length === 1 ? "package" : "packages"}</span>
+        </div>
+
+        {/* Highlights */}
+        {highlights.length > 0 && (
+          <section aria-labelledby="dest-highlights-heading">
+            <h2 id="dest-highlights-heading" className="text-2xl font-bold mb-4">Highlights</h2>
+            <Highlights highlights={highlights} />
+          </section>
+        )}
+
+        {/* Top Places */}
+        {places.length > 0 && (
+          <section aria-labelledby="dest-places-heading">
+            <h2 id="dest-places-heading" className="text-2xl font-bold mb-4">Top Places to Visit</h2>
+            <Places places={places} />
+          </section>
+        )}
+
+        {/* Best Time to Visit */}
+        {dest.bestTime && (
+          <section aria-labelledby="dest-besttime-heading">
+            <h2 id="dest-besttime-heading" className="text-2xl font-bold mb-4">Best Time to Visit</h2>
+            <p className="text-muted-foreground leading-relaxed">{dest.bestTime}</p>
+          </section>
+        )}
+
+        {/* Travel Tips */}
+        {dest.travelTips && (
+          <section aria-labelledby="dest-tips-heading">
+            <h2 id="dest-tips-heading" className="text-2xl font-bold mb-4">Travel Tips</h2>
+            <TravelTips content={dest.travelTips} />
+          </section>
+        )}
+
+        {/* Photo Gallery */}
+        {gallery.length > 0 && (
+          <section aria-labelledby="dest-gallery-heading">
+            <h2 id="dest-gallery-heading" className="text-2xl font-bold mb-4">Photo Gallery</h2>
+            <PhotoGallery images={gallery} name={dest.name} />
+          </section>
+        )}
+
+        {/* Packages */}
+        <section aria-labelledby="dest-packages-heading">
+          <h2 id="dest-packages-heading" className="text-2xl font-bold mb-6">
             {dest.name} Packages ({packages.length})
           </h2>
           {packages.length === 0 ? (
@@ -96,8 +143,8 @@ export default async function DestinationPage({ params }: PageProps) {
               ))}
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }

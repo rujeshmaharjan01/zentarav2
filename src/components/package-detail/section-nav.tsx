@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const sections = [
   { id: "overview", label: "Overview" },
@@ -36,23 +37,27 @@ export function SectionNav() {
 
   return (
     <div className="sticky top-16 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-      <div className="container mx-auto px-4">
-        <nav className="flex gap-1 overflow-x-auto py-2 scrollbar-none snap-x snap-mandatory">
-          {sections.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className={cn(
-                "whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-medium transition-colors snap-start",
-                active === s.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              )}
-            >
-              {s.label}
-            </a>
-          ))}
-        </nav>
+      <div className="container mx-auto px-4 relative">
+        <ScrollArea className="w-full">
+          <nav className="flex gap-1 py-2">
+            {sections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={cn(
+                  "whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                  active === s.id
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                )}
+              >
+                {s.label}
+              </a>
+            ))}
+          </nav>
+          <ScrollBar orientation="horizontal" className="invisible" />
+        </ScrollArea>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none lg:hidden" />
       </div>
     </div>
   );

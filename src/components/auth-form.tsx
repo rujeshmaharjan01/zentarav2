@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuthFormProps {
   mode: "sign-in" | "sign-up";
@@ -72,9 +73,13 @@ export function AuthForm({ mode }: AuthFormProps) {
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" placeholder={isSignUp ? "At least 8 characters" : undefined} value={password} onChange={(e) => setPassword(e.target.value)} minLength={isSignUp ? 8 : undefined} required />
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading && <Spinner className="mr-2" />}
             {isSignUp ? "Create Account" : "Sign In"}
           </Button>
         </form>

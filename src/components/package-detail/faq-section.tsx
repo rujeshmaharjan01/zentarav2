@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 const faqCategories = [
   {
@@ -46,44 +44,26 @@ const faqCategories = [
 ];
 
 export function FaqSection() {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
-
-  function toggle(id: string) {
-    setOpenItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
   return (
     <div className="space-y-6">
       {faqCategories.map((cat) => (
         <div key={cat.category}>
           <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-3">{cat.category}</h3>
-          <div className="space-y-1">
+          <Accordion multiple>
             {cat.questions.map((item) => {
               const id = `${cat.category}-${item.q}`;
-              const isOpen = openItems.has(id);
               return (
-                <div key={id} className="border rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => toggle(id)}
-                    className="w-full flex items-center justify-between gap-3 p-3 text-left text-sm hover:bg-muted/50 transition-colors"
-                  >
-                    <span className="font-medium">{item.q}</span>
-                    <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
-                  </button>
-                  {isOpen && (
-                    <div className="px-3 pb-3">
-                      <p className="text-sm text-muted-foreground">{item.a}</p>
-                    </div>
-                  )}
-                </div>
+                <AccordionItem key={id} value={id} className="border rounded-lg mb-1">
+                  <AccordionTrigger className="px-4 py-4 text-sm font-medium min-h-[48px]">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <p className="text-sm text-muted-foreground">{item.a}</p>
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </div>
+          </Accordion>
         </div>
       ))}
     </div>

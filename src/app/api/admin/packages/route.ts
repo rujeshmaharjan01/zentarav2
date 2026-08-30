@@ -2,6 +2,18 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin, buildPackageData, PackageSchema } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 
+export async function GET(request: Request) {
+  const { error } = await requireAdmin(request);
+  if (error) return error;
+
+  const packages = await prisma.package.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { bookings: true } } },
+  });
+
+  return NextResponse.json(packages);
+}
+
 export async function POST(request: Request) {
   const { error } = await requireAdmin(request);
   if (error) return error;

@@ -87,8 +87,8 @@ export function Reviews({ packageId, isLoggedIn }: ReviewsProps) {
             <label className="text-sm font-medium">Your Rating</label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((n) => (
-                <button key={n} type="button" onClick={() => setRating(n)} className="p-1.5">
-                  <Star className={`h-5 w-5 ${n <= rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground hover:text-yellow-400"}`} />
+                <button key={n} type="button" onClick={() => setRating(n)} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center">
+                  <Star className={`h-6 w-6 ${n <= rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground hover:text-yellow-400"}`} />
                 </button>
               ))}
             </div>

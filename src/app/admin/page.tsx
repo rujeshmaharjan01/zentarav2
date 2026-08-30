@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, CalendarDays, DollarSign, Users } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Package, CalendarDays, DollarSign, Users, Trophy } from "lucide-react";
 import { RevenueChart, BookingsByPackage, RevenueByCategory } from "@/components/admin/charts";
 import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +43,6 @@ async function StatsCards() {
   );
 }
 
-// ponytail: raw SQL — single query replaces 12 aggregate calls
 async function RevenueByMonth() {
   const now = new Date();
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
@@ -82,7 +83,6 @@ async function BookingsByPackageChart() {
   return <BookingsByPackage data={data} />;
 }
 
-// ponytail: groupBy + batch lookup replaces full-booking-scan
 async function RevenueByCategoryChart() {
   const raw = await prisma.booking.groupBy({
     by: ["packageId"],
@@ -109,6 +109,13 @@ async function RevenueByCategoryChart() {
   return <RevenueByCategory data={data} />;
 }
 
+const statusProgress: Record<string, number> = {
+  confirmed: 75,
+  pending: 40,
+  completed: 100,
+  cancelled: 0,
+};
+
 async function RecentBookings() {
   const bookings = await prisma.booking.findMany({
     take: 5,
@@ -128,9 +135,10 @@ async function RecentBookings() {
           <div className="space-y-4">
             {bookings.map((b) => (
               <div key={b.id} className="flex items-center justify-between gap-4 border-b pb-4 last:border-0 last:pb-0">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="font-medium truncate">{b.user.name}</p>
                   <p className="text-sm text-muted-foreground truncate">{b.package.title}</p>
+                  <Progress value={statusProgress[b.status] ?? 0} className="h-1.5 mt-2" />
                 </div>
                 <div className="text-right shrink-0">
                   <p className="font-medium">${b.totalPrice}</p>
@@ -146,7 +154,72 @@ async function RecentBookings() {
 }
 
 function ChartSkeleton() {
-  return <div className="h-[300px] rounded-lg bg-muted animate-pulse" />;
+  return <Skeleton className="h-[300px] w-full" />;
+}
+
+async function TopPackages() {
+  const raw = await prisma.booking.groupBy({
+    by: ["packageId"],
+    _sum: { totalPrice: true },
+    _count: true,
+    where: { status: { not: "cancelled" } },
+    orderBy: { _sum: { totalPrice: "desc" } },
+    take: 5,
+  });
+
+  const packages = await prisma.package.findMany({
+    where: { id: { in: raw.map((b) => b.packageId) } },
+    select: { id: true, title: true, category: true },
+  });
+  const pkgMap = new Map(packages.map((p) => [p.id, p]));
+
+  const data = raw.map((b, i) => {
+    const pkg = pkgMap.get(b.packageId);
+    return {
+      rank: i + 1,
+      title: pkg?.title || "Unknown",
+      category: pkg?.category || "—",
+      revenue: Number(b._sum.totalPrice || 0),
+      bookings: b._count,
+    };
+  });
+
+  const maxRevenue = data[0]?.revenue || 1;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Trophy className="h-4 w-4 text-yellow-500" />
+          Top Packages by Revenue
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {data.length === 0 ? (
+          <p className="text-muted-foreground text-sm">No bookings yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {data.map((d) => (
+              <div key={d.rank} className="space-y-1.5">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-bold text-muted-foreground w-5">{d.rank}.</span>
+                    <span className="font-medium truncate">{d.title}</span>
+                    <span className="text-xs text-muted-foreground capitalize">({d.category})</span>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="font-medium">${d.revenue.toLocaleString()}</span>
+                    <span className="text-muted-foreground ml-1 text-xs">({d.bookings})</span>
+                  </div>
+                </div>
+                <Progress value={(d.revenue / maxRevenue) * 100} className="h-1.5" />
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 }
 
 export default async function AdminDashboardPage() {
@@ -154,7 +227,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
 
-      <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-[104px] rounded-lg bg-muted animate-pulse" />)}</div>}>
+      <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[104px] w-full" />)}</div>}>
         <StatsCards />
       </Suspense>
 
@@ -172,9 +245,13 @@ export default async function AdminDashboardPage() {
           <RevenueByCategoryChart />
         </Suspense>
         <Suspense fallback={<ChartSkeleton />}>
-          <RecentBookings />
+          <TopPackages />
         </Suspense>
       </div>
+
+      <Suspense fallback={<ChartSkeleton />}>
+        <RecentBookings />
+      </Suspense>
     </div>
   );
 }

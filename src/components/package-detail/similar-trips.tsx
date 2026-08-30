@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { PackageCard } from "@/components/package-card";
 import { prisma } from "@/lib/prisma";
 

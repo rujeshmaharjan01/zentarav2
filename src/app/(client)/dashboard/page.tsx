@@ -1,22 +1,93 @@
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Users, Compass } from "lucide-react";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Compass } from "lucide-react";
+import { BookingCard } from "./booking-card";
 
-export default async function DashboardPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/sign-in");
+interface Booking {
+  id: string;
+  travelDate: string;
+  guests: number;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+  package: {
+    id: string;
+    title: string;
+    destination: string;
+    imageUrl?: string | null;
+  };
+}
 
-  const bookings = await prisma.booking.findMany({
-    where: { userId: session.user.id },
-    include: { package: true },
-    orderBy: { createdAt: "desc" },
-  });
+export default function DashboardPage() {
+  const router = useRouter();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+
+  const fetchBookings = useCallback(async () => {
+    try {
+      const res = await fetch("/api/bookings");
+      if (res.ok) {
+        const data = await res.json();
+        setBookings(data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  useEffect(() => {
+    if (bookings.length === 0) return;
+    const confirmedOrCompleted = bookings.filter(
+      (b) => b.status === "confirmed" || b.status === "completed"
+    );
+    if (confirmedOrCompleted.length === 0) return;
+
+    Promise.all(
+      confirmedOrCompleted.map((b) =>
+        fetch(`/api/reviews?packageId=${b.package.id}`)
+          .then((r) => r.json())
+          .then((reviews: Array<{ userId?: string }>) => {
+            const hasReviewed = reviews.some((r) => r.userId);
+            return hasReviewed ? b.id : null;
+          })
+          .catch(() => null)
+      )
+    ).then((ids) => {
+      setReviewedIds(new Set(ids.filter(Boolean) as string[]));
+    });
+  }, [bookings]);
+
+  function handleCancelled() {
+    fetchBookings();
+  }
+
+  function handleReviewSubmitted() {
+    fetchBookings();
+  }
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold">My Bookings</h1>
+          <p className="text-muted-foreground">Manage your travel bookings</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-[300px] rounded-lg bg-muted animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -38,33 +109,12 @@ export default async function DashboardPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bookings.map((booking) => (
-            <Card key={booking.id}>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg">{booking.package.title}</CardTitle>
-                  <Badge variant={booking.status === "confirmed" ? "default" : booking.status === "cancelled" ? "destructive" : "secondary"}>
-                    {booking.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {booking.package.destination}
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {new Date(booking.travelDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Users className="h-3.5 w-3.5" />
-                  {booking.guests} guest{booking.guests > 1 ? "s" : ""}
-                </div>
-                <div className="pt-2 border-t font-semibold">
-                  Total: ${booking.totalPrice}
-                </div>
-              </CardContent>
-            </Card>
+            <BookingCard
+              key={booking.id}
+              booking={{ ...booking, hasReview: reviewedIds.has(booking.id) }}
+              onCancelled={handleCancelled}
+              onReviewSubmitted={handleReviewSubmitted}
+            />
           ))}
         </div>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,15 +9,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { ItineraryDay } from "@/lib/types";
 import type { Package } from "@/generated/prisma/client";
 
 type FormDataDay = Record<keyof Omit<ItineraryDay, "day">, string>;
 
+interface Destination { id: string; name: string; slug: string; }
+
 interface PackageFormProps {
-  initialData?: Partial<Pick<Package, "title" | "description" | "destination" | "imageUrl" | "category" | "tag" | "price" | "duration" | "maxGroupSize" | "rating" | "available" | "highlights" | "itinerary">>;
+  initialData?: Partial<Pick<Package, "title" | "description" | "destination" | "destinationId" | "imageUrl" | "category" | "tag" | "price" | "duration" | "maxGroupSize" | "rating" | "available" | "highlights" | "itinerary" | "images">>;
   mode: "create" | "update";
   packageId?: string;
 }
@@ -38,6 +39,7 @@ type PackageFormState = {
   title: string;
   description: string;
   destination: string;
+  destinationId: string;
   imageUrl: string;
   category: string;
   tag: string;
@@ -48,15 +50,16 @@ type PackageFormState = {
   available: boolean;
   highlights: string;
   itinerary: FormDataDay[];
+  images: string[];
 };
 
 function makeInitial(data?: PackageFormProps["initialData"]): PackageFormState {
   if (!data) {
     return {
-      title: "", description: "", destination: "", imageUrl: "",
+      title: "", description: "", destination: "", destinationId: "", imageUrl: "",
       category: "trek", tag: "", price: "", duration: "",
       maxGroupSize: "20", rating: "5", available: true,
-      highlights: "", itinerary: [],
+      highlights: "", itinerary: [], images: [],
     };
   }
 
@@ -75,12 +78,14 @@ function makeInitial(data?: PackageFormProps["initialData"]): PackageFormState {
 
   return {
     title: data.title || "", description: data.description || "",
-    destination: data.destination || "", imageUrl: data.imageUrl || "",
+    destination: data.destination || "", destinationId: data.destinationId || "",
+    imageUrl: data.imageUrl || "",
     category: data.category || "trek", tag: data.tag || "",
     price: String(data.price ?? ""), duration: String(data.duration ?? ""),
     maxGroupSize: String(data.maxGroupSize ?? "20"),
     rating: String(data.rating ?? "5"), available: data.available ?? true,
     highlights, itinerary,
+    images: Array.isArray(data.images) ? (data.images as string[]) : [],
   };
 }
 
@@ -89,6 +94,17 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
   const [isPending, startTransition] = useTransition();
   const [form, setForm] = useState(makeInitial(initialData));
   const [openDays, setOpenDays] = useState<Set<number>>(new Set([0]));
+  const [touched, setTouched] = useState<Set<string>>(new Set());
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+
+  useEffect(() => {
+    fetch("/api/destinations")
+      .then((r) => r.json())
+      .then((data: Destination[]) => setDestinations(data))
+      .catch(() => {});
+  }, []);
 
   function set<K extends keyof PackageFormState>(key: K, value: PackageFormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -126,11 +142,55 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
     });
   }
 
+  function addImage() {
+    setForm((prev) => ({ ...prev, images: [...prev.images, ""] }));
+  }
+
+  function removeImage(i: number) {
+    setForm((prev) => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }));
+  }
+
+  function setImage(i: number, value: string) {
+    setForm((prev) => {
+      const images = [...prev.images];
+      images[i] = value;
+      return { ...prev, images };
+    });
+  }
+
+  function touch(key: string) {
+    setTouched((prev) => new Set(prev).add(key));
+  }
+
+  function fieldError(key: string): string {
+    if (!touched.has(key)) return "";
+    switch (key) {
+      case "title": return form.title.trim() ? "" : "Title is required";
+      case "destination": return form.destination.trim() ? "" : "Destination is required";
+      case "description": return form.description.trim() ? "" : "Description is required";
+      case "price": return parseFloat(form.price) > 0 ? "" : "Price must be > 0";
+      case "duration": return parseInt(form.duration) > 0 ? "" : "Duration must be > 0";
+      default: return "";
+    }
+  }
+
+  function fieldInvalid(key: string) {
+    return touched.has(key) && !!fieldError(key);
+  }
+
+  function inputClass(key: string) {
+    return fieldInvalid(key)
+      ? "border-destructive focus-visible:ring-destructive"
+      : "";
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setTouched(new Set(["title", "destination", "description", "price", "duration"]));
 
     const body = {
       ...form,
+      destinationId: form.destinationId || null,
       price: parseFloat(form.price) || 0,
       duration: parseInt(form.duration) || 1,
       maxGroupSize: parseInt(form.maxGroupSize) || 20,
@@ -140,7 +200,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
         .map((s) => s.trim())
         .filter(Boolean),
       itinerary: form.itinerary.map((d, i) => ({
-        day: i + 1,
+        day: String(i + 1),
         title: d.title,
         description: d.description,
         trekTime: d.trekTime || null,
@@ -151,6 +211,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
         meals: d.meals || null,
         overnight: d.overnight || null,
       })),
+      images: form.images.filter(Boolean),
     };
 
     const url = mode === "create"
@@ -181,19 +242,61 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
           <h2 className="text-lg font-semibold">Basic Information</h2>
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
-            <Input id="title" value={form.title} onChange={(e) => set("title", e.target.value)} required />
+            <Input id="title" value={form.title} onChange={(e) => set("title", e.target.value)} onBlur={() => touch("title")} className={inputClass("title")} />
+            {fieldError("title") && <p className="text-xs text-destructive">{fieldError("title")}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="destination">Destination *</Label>
-            <Input id="destination" value={form.destination} onChange={(e) => set("destination", e.target.value)} required />
+            <select
+              id="destination"
+              value={form.destinationId || "__custom__"}
+              onChange={(e) => {
+                if (e.target.value === "__custom__") {
+                  set("destinationId", "");
+                  set("destination", "");
+                } else {
+                  const dest = destinations.find((d) => d.id === e.target.value);
+                  if (dest) {
+                    set("destinationId", dest.id);
+                    set("destination", dest.name);
+                  }
+                }
+                touch("destination");
+              }}
+              onBlur={() => touch("destination")}
+              className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${inputClass("destination")}`}
+            >
+              {!destinations.find((d) => d.id === form.destinationId) && form.destination && (
+                <option value="__custom__">{form.destination}</option>
+              )}
+              {destinations.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+            {fieldError("destination") && <p className="text-xs text-destructive">{fieldError("destination")}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>
-            <Textarea id="description" rows={4} value={form.description} onChange={(e) => set("description", e.target.value)} required />
+            <Textarea id="description" rows={4} value={form.description} onChange={(e) => set("description", e.target.value)} onBlur={() => touch("description")} className={inputClass("description")} />
+            {fieldError("description") && <p className="text-xs text-destructive">{fieldError("description")}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="imageUrl">Image URL</Label>
-            <Input id="imageUrl" type="url" value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://..." />
+            <Input id="imageUrl" type="url" value={form.imageUrl} onChange={(e) => { set("imageUrl", e.target.value); setImgLoaded(false); setImgError(false); }} placeholder="https://..." />
+            {form.imageUrl && !imgError && (
+              <div className="relative mt-2 h-40 w-full overflow-hidden rounded-lg border bg-muted">
+                {form.imageUrl && !imgLoaded && !imgError && (
+                  <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">Loading...</div>
+                )}
+                <img
+                  src={form.imageUrl}
+                  alt="Preview"
+                  className="h-full w-full object-cover"
+                  onLoad={() => setImgLoaded(true)}
+                  onError={() => setImgError(true)}
+                />
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -216,6 +319,54 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
         </CardContent>
       </Card>
 
+      {/* Gallery Images */}
+      <Card>
+        <CardContent className="pt-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Gallery Images</h2>
+              <p className="text-xs text-muted-foreground">Additional images for the package carousel</p>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={addImage}>
+              <Plus className="h-4 w-4 mr-1" /> Add Image
+            </Button>
+          </div>
+
+          {form.images.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No gallery images yet. Click "Add Image" to start.
+            </p>
+          )}
+
+          <div className="space-y-3">
+            {form.images.map((url, i) => (
+              <div key={i} className="flex gap-3 items-start">
+                <Input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setImage(i, e.target.value)}
+                  placeholder="https://..."
+                  className="flex-1"
+                />
+                {url && (
+                  <div className="shrink-0 h-16 w-24 overflow-hidden rounded-lg border bg-muted">
+                    <img
+                      src={url}
+                      alt={`Gallery ${i + 1}`}
+                      className="h-full w-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    />
+                  </div>
+                )}
+                <button type="button" onClick={() => removeImage(i)} className="shrink-0 p-2 text-muted-foreground hover:text-destructive" aria-label={`Remove image ${i + 1}`}>
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Pricing & Details */}
       <Card>
         <CardContent className="pt-6 space-y-4">
@@ -223,11 +374,13 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Price ($) *</Label>
-              <Input id="price" type="number" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} required />
+              <Input id="price" type="number" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} onBlur={() => touch("price")} className={inputClass("price")} />
+              {fieldError("price") && <p className="text-xs text-destructive">{fieldError("price")}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration">Duration (days) *</Label>
-              <Input id="duration" type="number" value={form.duration} onChange={(e) => set("duration", e.target.value)} required />
+              <Input id="duration" type="number" value={form.duration} onChange={(e) => set("duration", e.target.value)} onBlur={() => touch("duration")} className={inputClass("duration")} />
+              {fieldError("duration") && <p className="text-xs text-destructive">{fieldError("duration")}</p>}
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

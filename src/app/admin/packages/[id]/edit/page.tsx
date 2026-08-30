@@ -13,6 +13,7 @@ export default async function AdminEditPackagePage({ params }: { params: Promise
     title: pkg.title,
     description: pkg.description,
     destination: pkg.destination,
+    destinationId: pkg.destinationId,
     imageUrl: pkg.imageUrl,
     category: pkg.category,
     tag: pkg.tag,
@@ -23,6 +24,7 @@ export default async function AdminEditPackagePage({ params }: { params: Promise
     available: pkg.available,
     highlights: pkg.highlights,
     itinerary: pkg.itinerary,
+    images: pkg.images,
   };
 
   return (

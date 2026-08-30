@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const BookingStatusSchema = z.object({
-  status: z.enum(["pending", "confirmed", "cancelled"]),
+  status: z.enum(["pending", "confirmed", "cancelled", "completed"]),
 });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {

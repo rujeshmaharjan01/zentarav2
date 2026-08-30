@@ -401,6 +401,7 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  Destination: 'Destination',
   Package: 'Package',
   Booking: 'Booking',
   Review: 'Review'
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "package" | "booking" | "review"
+    modelProps: "user" | "session" | "account" | "verification" | "destination" | "package" | "booking" | "review"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -716,6 +717,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VerificationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VerificationCountAggregateOutputType> | number
+        }
+      }
+    }
+    Destination: {
+      payload: Prisma.$DestinationPayload<ExtArgs>
+      fields: Prisma.DestinationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DestinationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DestinationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        findFirst: {
+          args: Prisma.DestinationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DestinationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        findMany: {
+          args: Prisma.DestinationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        create: {
+          args: Prisma.DestinationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        createMany: {
+          args: Prisma.DestinationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DestinationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        delete: {
+          args: Prisma.DestinationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        update: {
+          args: Prisma.DestinationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        deleteMany: {
+          args: Prisma.DestinationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DestinationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DestinationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        upsert: {
+          args: Prisma.DestinationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        aggregate: {
+          args: Prisma.DestinationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDestination>
+        }
+        groupBy: {
+          args: Prisma.DestinationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DestinationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DestinationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DestinationCountAggregateOutputType> | number
         }
       }
     }
@@ -1040,11 +1115,34 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const DestinationScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  image: 'image',
+  heroImage: 'heroImage',
+  continent: 'continent',
+  highlights: 'highlights',
+  bestTime: 'bestTime',
+  travelTips: 'travelTips',
+  places: 'places',
+  gallery: 'gallery',
+  featured: 'featured',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DestinationScalarFieldEnum = (typeof DestinationScalarFieldEnum)[keyof typeof DestinationScalarFieldEnum]
+
+
 export const PackageScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
   destination: 'destination',
+  destinationId: 'destinationId',
   price: 'price',
   duration: 'duration',
   imageUrl: 'imageUrl',
@@ -1071,6 +1169,10 @@ export const BookingScalarFieldEnum = {
   guests: 'guests',
   totalPrice: 'totalPrice',
   status: 'status',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  specialRequests: 'specialRequests',
   createdAt: 'createdAt'
 } as const
 
@@ -1171,16 +1273,16 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'Json'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'QueryMode'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1199,16 +1301,16 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Json'
+ * Reference to a field of type 'Float'
  */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'QueryMode'
+ * Reference to a field of type 'Float[]'
  */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1366,6 +1468,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
+  destination?: Prisma.DestinationOmit
   package?: Prisma.PackageOmit
   booking?: Prisma.BookingOmit
   review?: Prisma.ReviewOmit

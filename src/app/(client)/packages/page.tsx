@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
 import { SearchForm } from "./search-form";
+import { CategoryFilter } from "./category-filter";
+import { PriceFilter } from "./price-filter";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -17,9 +20,12 @@ export const metadata: Metadata = {
 export default async function PackagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; minPrice?: string; maxPrice?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, category, minPrice, maxPrice } = await searchParams;
+
+  const minP = minPrice ? parseInt(minPrice) : undefined;
+  const maxP = maxPrice ? parseInt(maxPrice) : undefined;
 
   const packages = await prisma.package.findMany({
     where: {
@@ -30,6 +36,15 @@ export default async function PackagesPage({
               { destination: { contains: q, mode: "insensitive" } },
               { title: { contains: q, mode: "insensitive" } },
             ],
+          }
+        : {}),
+      ...(category && category !== "all" ? { category } : {}),
+      ...(minP !== undefined || maxP !== undefined
+        ? {
+            price: {
+              ...(minP !== undefined ? { gte: minP } : {}),
+              ...(maxP !== undefined ? { lte: maxP } : {}),
+            },
           }
         : {}),
     },
@@ -50,6 +65,12 @@ export default async function PackagesPage({
           </p>
         </div>
         <SearchForm defaultValue={q ?? ""} />
+        <Suspense>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <CategoryFilter />
+            <PriceFilter />
+          </div>
+        </Suspense>
       </div>
 
       {packages.length === 0 ? (
@@ -77,6 +98,9 @@ export default async function PackagesPage({
               duration={pkg.duration}
               imageUrl={pkg.imageUrl}
               maxGroupSize={pkg.maxGroupSize}
+              tag={pkg.tag}
+              rating={pkg.rating}
+              reviewCount={pkg.reviewCount}
             />
           ))}
         </div>

@@ -7,6 +7,7 @@ export const PackageSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   destination: z.string().min(1),
+  destinationId: z.string().nullable().optional(),
   price: z.number().positive(),
   duration: z.number().int().positive(),
   imageUrl: z.string().nullable().optional(),
@@ -16,13 +17,15 @@ export const PackageSchema = z.object({
   rating: z.number().min(1).max(5).optional(),
   available: z.boolean().optional(),
   highlights: z.array(z.string()).optional(),
-  itinerary: z.array(z.record(z.string(), z.string())).optional(),
+  itinerary: z.array(z.record(z.string(), z.string().nullable())).optional(),
+  images: z.array(z.string()).optional(),
 });
 
 interface PackageInput {
   title: string;
   description: string;
   destination: string;
+  destinationId?: string | null;
   price: number;
   duration: number;
   imageUrl?: string | null;
@@ -33,15 +36,18 @@ interface PackageInput {
   available?: boolean;
   highlights?: unknown;
   itinerary?: unknown;
+  images?: string[];
 }
 
 export function buildPackageData(b: PackageInput) {
   return {
     title: b.title, description: b.description, destination: b.destination,
+    destinationId: b.destinationId || null,
     imageUrl: b.imageUrl || null, category: b.category || "trek", tag: b.tag || null,
     price: b.price, duration: b.duration, maxGroupSize: b.maxGroupSize || 20,
     rating: b.rating ?? 5, available: b.available ?? true,
     highlights: b.highlights || [], itinerary: b.itinerary || [],
+    images: b.images || [],
   };
 }
 

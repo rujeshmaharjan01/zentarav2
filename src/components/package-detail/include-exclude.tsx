@@ -1,4 +1,6 @@
 import { Check, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const INCLUDES = [
   "Licensed English-speaking guide",
@@ -24,33 +26,42 @@ const EXCLUDES = [
 
 export function IncludeExclude() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div>
-        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-          <Check className="h-5 w-5 text-green-600" /> Included
-        </h3>
-        <ul className="space-y-2">
-          {INCLUDES.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm">
-              <Check className="h-4 w-4 mt-0.5 shrink-0 text-green-600" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-          <X className="h-5 w-5 text-destructive" /> Excluded
-        </h3>
-        <ul className="space-y-2">
-          {EXCLUDES.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm">
-              <X className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Check className="h-5 w-5 text-green-600" /> Included
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            {INCLUDES.map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm">
+                <Check className="h-4 w-4 mt-0.5 shrink-0 text-green-600" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+      <Separator className="md:hidden" />
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <X className="h-5 w-5 text-destructive" /> Excluded
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            {EXCLUDES.map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm">
+                <X className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -47,6 +47,7 @@ export type PackageMinAggregateOutputType = {
   title: string | null
   description: string | null
   destination: string | null
+  destinationId: string | null
   price: number | null
   duration: number | null
   imageUrl: string | null
@@ -64,6 +65,7 @@ export type PackageMaxAggregateOutputType = {
   title: string | null
   description: string | null
   destination: string | null
+  destinationId: string | null
   price: number | null
   duration: number | null
   imageUrl: string | null
@@ -81,6 +83,7 @@ export type PackageCountAggregateOutputType = {
   title: number
   description: number
   destination: number
+  destinationId: number
   price: number
   duration: number
   imageUrl: number
@@ -119,6 +122,7 @@ export type PackageMinAggregateInputType = {
   title?: true
   description?: true
   destination?: true
+  destinationId?: true
   price?: true
   duration?: true
   imageUrl?: true
@@ -136,6 +140,7 @@ export type PackageMaxAggregateInputType = {
   title?: true
   description?: true
   destination?: true
+  destinationId?: true
   price?: true
   duration?: true
   imageUrl?: true
@@ -153,6 +158,7 @@ export type PackageCountAggregateInputType = {
   title?: true
   description?: true
   destination?: true
+  destinationId?: true
   price?: true
   duration?: true
   imageUrl?: true
@@ -260,6 +266,7 @@ export type PackageGroupByOutputType = {
   title: string
   description: string
   destination: string
+  destinationId: string | null
   price: number
   duration: number
   imageUrl: string | null
@@ -303,6 +310,7 @@ export type PackageWhereInput = {
   title?: Prisma.StringFilter<"Package"> | string
   description?: Prisma.StringFilter<"Package"> | string
   destination?: Prisma.StringFilter<"Package"> | string
+  destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
   price?: Prisma.FloatFilter<"Package"> | number
   duration?: Prisma.IntFilter<"Package"> | number
   imageUrl?: Prisma.StringNullableFilter<"Package"> | string | null
@@ -318,6 +326,7 @@ export type PackageWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Package"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  destinationRel?: Prisma.XOR<Prisma.DestinationNullableScalarRelationFilter, Prisma.DestinationWhereInput> | null
 }
 
 export type PackageOrderByWithRelationInput = {
@@ -325,6 +334,7 @@ export type PackageOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   destination?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -340,6 +350,7 @@ export type PackageOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
+  destinationRel?: Prisma.DestinationOrderByWithRelationInput
 }
 
 export type PackageWhereUniqueInput = Prisma.AtLeast<{
@@ -350,6 +361,7 @@ export type PackageWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Package"> | string
   description?: Prisma.StringFilter<"Package"> | string
   destination?: Prisma.StringFilter<"Package"> | string
+  destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
   price?: Prisma.FloatFilter<"Package"> | number
   duration?: Prisma.IntFilter<"Package"> | number
   imageUrl?: Prisma.StringNullableFilter<"Package"> | string | null
@@ -365,6 +377,7 @@ export type PackageWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Package"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  destinationRel?: Prisma.XOR<Prisma.DestinationNullableScalarRelationFilter, Prisma.DestinationWhereInput> | null
 }, "id">
 
 export type PackageOrderByWithAggregationInput = {
@@ -372,6 +385,7 @@ export type PackageOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   destination?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -400,6 +414,7 @@ export type PackageScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Package"> | string
   description?: Prisma.StringWithAggregatesFilter<"Package"> | string
   destination?: Prisma.StringWithAggregatesFilter<"Package"> | string
+  destinationId?: Prisma.StringNullableWithAggregatesFilter<"Package"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Package"> | number
   duration?: Prisma.IntWithAggregatesFilter<"Package"> | number
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Package"> | string | null
@@ -435,6 +450,7 @@ export type PackageCreateInput = {
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutPackageInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutPackageInput
+  destinationRel?: Prisma.DestinationCreateNestedOneWithoutPackagesInput
 }
 
 export type PackageUncheckedCreateInput = {
@@ -442,6 +458,7 @@ export type PackageUncheckedCreateInput = {
   title: string
   description: string
   destination: string
+  destinationId?: string | null
   price: number
   duration: number
   imageUrl?: string | null
@@ -479,6 +496,7 @@ export type PackageUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutPackageNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutPackageNestedInput
+  destinationRel?: Prisma.DestinationUpdateOneWithoutPackagesNestedInput
 }
 
 export type PackageUncheckedUpdateInput = {
@@ -486,6 +504,7 @@ export type PackageUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -508,6 +527,7 @@ export type PackageCreateManyInput = {
   title: string
   description: string
   destination: string
+  destinationId?: string | null
   price: number
   duration: number
   imageUrl?: string | null
@@ -548,6 +568,7 @@ export type PackageUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -563,11 +584,22 @@ export type PackageUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type PackageListRelationFilter = {
+  every?: Prisma.PackageWhereInput
+  some?: Prisma.PackageWhereInput
+  none?: Prisma.PackageWhereInput
+}
+
+export type PackageOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type PackageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   destination?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
@@ -596,6 +628,7 @@ export type PackageMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   destination?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
@@ -613,6 +646,7 @@ export type PackageMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   destination?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
@@ -638,15 +672,49 @@ export type PackageScalarRelationFilter = {
   isNot?: Prisma.PackageWhereInput
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type PackageCreateNestedManyWithoutDestinationRelInput = {
+  create?: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput> | Prisma.PackageCreateWithoutDestinationRelInput[] | Prisma.PackageUncheckedCreateWithoutDestinationRelInput[]
+  connectOrCreate?: Prisma.PackageCreateOrConnectWithoutDestinationRelInput | Prisma.PackageCreateOrConnectWithoutDestinationRelInput[]
+  createMany?: Prisma.PackageCreateManyDestinationRelInputEnvelope
+  connect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
+export type PackageUncheckedCreateNestedManyWithoutDestinationRelInput = {
+  create?: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput> | Prisma.PackageCreateWithoutDestinationRelInput[] | Prisma.PackageUncheckedCreateWithoutDestinationRelInput[]
+  connectOrCreate?: Prisma.PackageCreateOrConnectWithoutDestinationRelInput | Prisma.PackageCreateOrConnectWithoutDestinationRelInput[]
+  createMany?: Prisma.PackageCreateManyDestinationRelInputEnvelope
+  connect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+}
+
+export type PackageUpdateManyWithoutDestinationRelNestedInput = {
+  create?: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput> | Prisma.PackageCreateWithoutDestinationRelInput[] | Prisma.PackageUncheckedCreateWithoutDestinationRelInput[]
+  connectOrCreate?: Prisma.PackageCreateOrConnectWithoutDestinationRelInput | Prisma.PackageCreateOrConnectWithoutDestinationRelInput[]
+  upsert?: Prisma.PackageUpsertWithWhereUniqueWithoutDestinationRelInput | Prisma.PackageUpsertWithWhereUniqueWithoutDestinationRelInput[]
+  createMany?: Prisma.PackageCreateManyDestinationRelInputEnvelope
+  set?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  disconnect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  delete?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  connect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  update?: Prisma.PackageUpdateWithWhereUniqueWithoutDestinationRelInput | Prisma.PackageUpdateWithWhereUniqueWithoutDestinationRelInput[]
+  updateMany?: Prisma.PackageUpdateManyWithWhereWithoutDestinationRelInput | Prisma.PackageUpdateManyWithWhereWithoutDestinationRelInput[]
+  deleteMany?: Prisma.PackageScalarWhereInput | Prisma.PackageScalarWhereInput[]
+}
+
+export type PackageUncheckedUpdateManyWithoutDestinationRelNestedInput = {
+  create?: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput> | Prisma.PackageCreateWithoutDestinationRelInput[] | Prisma.PackageUncheckedCreateWithoutDestinationRelInput[]
+  connectOrCreate?: Prisma.PackageCreateOrConnectWithoutDestinationRelInput | Prisma.PackageCreateOrConnectWithoutDestinationRelInput[]
+  upsert?: Prisma.PackageUpsertWithWhereUniqueWithoutDestinationRelInput | Prisma.PackageUpsertWithWhereUniqueWithoutDestinationRelInput[]
+  createMany?: Prisma.PackageCreateManyDestinationRelInputEnvelope
+  set?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  disconnect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  delete?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  connect?: Prisma.PackageWhereUniqueInput | Prisma.PackageWhereUniqueInput[]
+  update?: Prisma.PackageUpdateWithWhereUniqueWithoutDestinationRelInput | Prisma.PackageUpdateWithWhereUniqueWithoutDestinationRelInput[]
+  updateMany?: Prisma.PackageUpdateManyWithWhereWithoutDestinationRelInput | Prisma.PackageUpdateManyWithWhereWithoutDestinationRelInput[]
+  deleteMany?: Prisma.PackageScalarWhereInput | Prisma.PackageScalarWhereInput[]
+}
+
+export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
@@ -682,6 +750,100 @@ export type PackageUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PackageUpdateToOneWithWhereWithoutReviewsInput, Prisma.PackageUpdateWithoutReviewsInput>, Prisma.PackageUncheckedUpdateWithoutReviewsInput>
 }
 
+export type PackageCreateWithoutDestinationRelInput = {
+  id?: string
+  title: string
+  description: string
+  destination: string
+  price: number
+  duration: number
+  imageUrl?: string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: boolean
+  maxGroupSize?: number
+  category?: string
+  tag?: string | null
+  rating?: number
+  reviewCount?: number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  bookings?: Prisma.BookingCreateNestedManyWithoutPackageInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutPackageInput
+}
+
+export type PackageUncheckedCreateWithoutDestinationRelInput = {
+  id?: string
+  title: string
+  description: string
+  destination: string
+  price: number
+  duration: number
+  imageUrl?: string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: boolean
+  maxGroupSize?: number
+  category?: string
+  tag?: string | null
+  rating?: number
+  reviewCount?: number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutPackageInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutPackageInput
+}
+
+export type PackageCreateOrConnectWithoutDestinationRelInput = {
+  where: Prisma.PackageWhereUniqueInput
+  create: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput>
+}
+
+export type PackageCreateManyDestinationRelInputEnvelope = {
+  data: Prisma.PackageCreateManyDestinationRelInput | Prisma.PackageCreateManyDestinationRelInput[]
+  skipDuplicates?: boolean
+}
+
+export type PackageUpsertWithWhereUniqueWithoutDestinationRelInput = {
+  where: Prisma.PackageWhereUniqueInput
+  update: Prisma.XOR<Prisma.PackageUpdateWithoutDestinationRelInput, Prisma.PackageUncheckedUpdateWithoutDestinationRelInput>
+  create: Prisma.XOR<Prisma.PackageCreateWithoutDestinationRelInput, Prisma.PackageUncheckedCreateWithoutDestinationRelInput>
+}
+
+export type PackageUpdateWithWhereUniqueWithoutDestinationRelInput = {
+  where: Prisma.PackageWhereUniqueInput
+  data: Prisma.XOR<Prisma.PackageUpdateWithoutDestinationRelInput, Prisma.PackageUncheckedUpdateWithoutDestinationRelInput>
+}
+
+export type PackageUpdateManyWithWhereWithoutDestinationRelInput = {
+  where: Prisma.PackageScalarWhereInput
+  data: Prisma.XOR<Prisma.PackageUpdateManyMutationInput, Prisma.PackageUncheckedUpdateManyWithoutDestinationRelInput>
+}
+
+export type PackageScalarWhereInput = {
+  AND?: Prisma.PackageScalarWhereInput | Prisma.PackageScalarWhereInput[]
+  OR?: Prisma.PackageScalarWhereInput[]
+  NOT?: Prisma.PackageScalarWhereInput | Prisma.PackageScalarWhereInput[]
+  id?: Prisma.StringFilter<"Package"> | string
+  title?: Prisma.StringFilter<"Package"> | string
+  description?: Prisma.StringFilter<"Package"> | string
+  destination?: Prisma.StringFilter<"Package"> | string
+  destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
+  price?: Prisma.FloatFilter<"Package"> | number
+  duration?: Prisma.IntFilter<"Package"> | number
+  imageUrl?: Prisma.StringNullableFilter<"Package"> | string | null
+  images?: Prisma.JsonFilter<"Package">
+  available?: Prisma.BoolFilter<"Package"> | boolean
+  maxGroupSize?: Prisma.IntFilter<"Package"> | number
+  category?: Prisma.StringFilter<"Package"> | string
+  tag?: Prisma.StringNullableFilter<"Package"> | string | null
+  rating?: Prisma.FloatFilter<"Package"> | number
+  reviewCount?: Prisma.IntFilter<"Package"> | number
+  highlights?: Prisma.JsonFilter<"Package">
+  itinerary?: Prisma.JsonFilter<"Package">
+  createdAt?: Prisma.DateTimeFilter<"Package"> | Date | string
+}
+
 export type PackageCreateWithoutBookingsInput = {
   id?: string
   title: string
@@ -701,6 +863,7 @@ export type PackageCreateWithoutBookingsInput = {
   itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutPackageInput
+  destinationRel?: Prisma.DestinationCreateNestedOneWithoutPackagesInput
 }
 
 export type PackageUncheckedCreateWithoutBookingsInput = {
@@ -708,6 +871,7 @@ export type PackageUncheckedCreateWithoutBookingsInput = {
   title: string
   description: string
   destination: string
+  destinationId?: string | null
   price: number
   duration: number
   imageUrl?: string | null
@@ -759,6 +923,7 @@ export type PackageUpdateWithoutBookingsInput = {
   itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutPackageNestedInput
+  destinationRel?: Prisma.DestinationUpdateOneWithoutPackagesNestedInput
 }
 
 export type PackageUncheckedUpdateWithoutBookingsInput = {
@@ -766,6 +931,7 @@ export type PackageUncheckedUpdateWithoutBookingsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -801,6 +967,7 @@ export type PackageCreateWithoutReviewsInput = {
   itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutPackageInput
+  destinationRel?: Prisma.DestinationCreateNestedOneWithoutPackagesInput
 }
 
 export type PackageUncheckedCreateWithoutReviewsInput = {
@@ -808,6 +975,7 @@ export type PackageUncheckedCreateWithoutReviewsInput = {
   title: string
   description: string
   destination: string
+  destinationId?: string | null
   price: number
   duration: number
   imageUrl?: string | null
@@ -859,9 +1027,74 @@ export type PackageUpdateWithoutReviewsInput = {
   itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutPackageNestedInput
+  destinationRel?: Prisma.DestinationUpdateOneWithoutPackagesNestedInput
 }
 
 export type PackageUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxGroupSize?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutPackageNestedInput
+}
+
+export type PackageCreateManyDestinationRelInput = {
+  id?: string
+  title: string
+  description: string
+  destination: string
+  price: number
+  duration: number
+  imageUrl?: string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: boolean
+  maxGroupSize?: number
+  category?: string
+  tag?: string | null
+  rating?: number
+  reviewCount?: number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+}
+
+export type PackageUpdateWithoutDestinationRelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxGroupSize?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUpdateManyWithoutPackageNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutPackageNestedInput
+}
+
+export type PackageUncheckedUpdateWithoutDestinationRelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
@@ -880,6 +1113,27 @@ export type PackageUncheckedUpdateWithoutReviewsInput = {
   itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutPackageNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutPackageNestedInput
+}
+
+export type PackageUncheckedUpdateManyWithoutDestinationRelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  duration?: Prisma.IntFieldUpdateOperationsInput | number
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxGroupSize?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  highlights?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  itinerary?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -927,6 +1181,7 @@ export type PackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   title?: boolean
   description?: boolean
   destination?: boolean
+  destinationId?: boolean
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
@@ -942,6 +1197,7 @@ export type PackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.Package$reviewsArgs<ExtArgs>
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
   _count?: boolean | Prisma.PackageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["package"]>
 
@@ -950,6 +1206,7 @@ export type PackageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   description?: boolean
   destination?: boolean
+  destinationId?: boolean
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
@@ -963,6 +1220,7 @@ export type PackageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   highlights?: boolean
   itinerary?: boolean
   createdAt?: boolean
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
 }, ExtArgs["result"]["package"]>
 
 export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -970,6 +1228,7 @@ export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   description?: boolean
   destination?: boolean
+  destinationId?: boolean
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
@@ -983,6 +1242,7 @@ export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   highlights?: boolean
   itinerary?: boolean
   createdAt?: boolean
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
 }, ExtArgs["result"]["package"]>
 
 export type PackageSelectScalar = {
@@ -990,6 +1250,7 @@ export type PackageSelectScalar = {
   title?: boolean
   description?: boolean
   destination?: boolean
+  destinationId?: boolean
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
@@ -1005,26 +1266,33 @@ export type PackageSelectScalar = {
   createdAt?: boolean
 }
 
-export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "destination" | "price" | "duration" | "imageUrl" | "images" | "available" | "maxGroupSize" | "category" | "tag" | "rating" | "reviewCount" | "highlights" | "itinerary" | "createdAt", ExtArgs["result"]["package"]>
+export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "destination" | "destinationId" | "price" | "duration" | "imageUrl" | "images" | "available" | "maxGroupSize" | "category" | "tag" | "rating" | "reviewCount" | "highlights" | "itinerary" | "createdAt", ExtArgs["result"]["package"]>
 export type PackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.Package$reviewsArgs<ExtArgs>
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
   _count?: boolean | Prisma.PackageCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type PackageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type PackageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type PackageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
+}
+export type PackageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  destinationRel?: boolean | Prisma.Package$destinationRelArgs<ExtArgs>
+}
 
 export type $PackagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Package"
   objects: {
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
+    destinationRel: Prisma.$DestinationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
     description: string
     destination: string
+    destinationId: string | null
     price: number
     duration: number
     imageUrl: string | null
@@ -1434,6 +1702,7 @@ export interface Prisma__PackageClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   bookings<T extends Prisma.Package$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Package$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.Package$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Package$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  destinationRel<T extends Prisma.Package$destinationRelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Package$destinationRelArgs<ExtArgs>>): Prisma.Prisma__DestinationClient<runtime.Types.Result.GetResult<Prisma.$DestinationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1467,6 +1736,7 @@ export interface PackageFieldRefs {
   readonly title: Prisma.FieldRef<"Package", 'String'>
   readonly description: Prisma.FieldRef<"Package", 'String'>
   readonly destination: Prisma.FieldRef<"Package", 'String'>
+  readonly destinationId: Prisma.FieldRef<"Package", 'String'>
   readonly price: Prisma.FieldRef<"Package", 'Float'>
   readonly duration: Prisma.FieldRef<"Package", 'Int'>
   readonly imageUrl: Prisma.FieldRef<"Package", 'String'>
@@ -1734,6 +2004,10 @@ export type PackageCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.PackageCreateManyInput | Prisma.PackageCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PackageIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1804,6 +2078,10 @@ export type PackageUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Packages to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PackageIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1918,6 +2196,25 @@ export type Package$reviewsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * Package.destinationRel
+ */
+export type Package$destinationRelArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Destination
+   */
+  select?: Prisma.DestinationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Destination
+   */
+  omit?: Prisma.DestinationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DestinationInclude<ExtArgs> | null
+  where?: Prisma.DestinationWhereInput
 }
 
 /**

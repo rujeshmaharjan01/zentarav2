@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Users, ArrowRight, Star } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface PackageCardProps {
   id: string;
@@ -19,7 +21,7 @@ interface PackageCardProps {
 export function PackageCard({ id, title, destination, price, duration, imageUrl, maxGroupSize, tag, rating, reviewCount }: PackageCardProps) {
   return (
     <div className="overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow">
-      <div className="aspect-video relative bg-muted">
+      <AspectRatio ratio={16 / 9} className="relative bg-muted">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
         ) : (
@@ -33,10 +35,33 @@ export function PackageCard({ id, title, destination, price, duration, imageUrl,
           </Badge>
         )}
         <Badge className="absolute top-2 right-2">${price}</Badge>
-      </div>
+      </AspectRatio>
       <div className="p-4 space-y-3">
         <div>
-          <h3 className="font-semibold text-lg line-clamp-1">{title}</h3>
+          <HoverCard>
+            <HoverCardTrigger render={<a href={`/packages/${id}`} className="block" />}>
+              <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors cursor-pointer">
+                {title}
+              </h3>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80" side="top">
+              <div className="space-y-2">
+                {imageUrl && <img src={imageUrl} alt={title} className="w-full h-32 object-cover rounded-md" />}
+                <h4 className="font-semibold">{title}</h4>
+                <p className="text-sm text-muted-foreground">{destination}</p>
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="font-medium">${price}/person</span>
+                  <span>{duration} days</span>
+                  {rating !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      {rating}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
           <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
             <MapPin className="h-3.5 w-3.5" />
             {destination}
