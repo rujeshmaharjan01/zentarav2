@@ -44,56 +44,62 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const parsed = BookingSchema.safeParse(await request.json());
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 });
+  try {
+    const parsed = BookingSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 });
+    }
+
+    const { packageId, travelDate, guests, name, email, phone, specialRequests } = parsed.data;
+    const guestCount = typeof guests === "string" ? parseInt(guests) : guests;
+
+    const pkg = await prisma.package.findUnique({ where: { id: packageId } });
+    if (!pkg) {
+      return NextResponse.json({ error: "Package not found" }, { status: 404 });
+    }
+
+    // Availability check
+    const date = new Date(travelDate);
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const result = await prisma.booking.aggregate({
+      _sum: { guests: true },
+      where: {
+        packageId,
+        status: { not: "cancelled" },
+        travelDate: { gte: startOfDay, lte: endOfDay },
+      },
+    });
+
+    const booked = result._sum.guests || 0;
+    if (booked + guestCount > pkg.maxGroupSize) {
+      return NextResponse.json(
+        { error: `Only ${pkg.maxGroupSize - booked} spot${pkg.maxGroupSize - booked === 1 ? "" : "s"} left for this date` },
+        { status: 409 },
+      );
+    }
+
+    const booking = await prisma.booking.create({
+      data: {
+        userId: session.user.id,
+        packageId,
+        travelDate: date,
+        guests: guestCount,
+        totalPrice: pkg.price * guestCount,
+        name: name || null,
+        email: email || null,
+        phone: phone || null,
+        specialRequests: specialRequests || null,
+      },
+    });
+
+    return NextResponse.json(booking);
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("POST /api/bookings error:", message, e);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const { packageId, travelDate, guests, name, email, phone, specialRequests } = parsed.data;
-  const guestCount = typeof guests === "string" ? parseInt(guests) : guests;
-
-  const pkg = await prisma.package.findUnique({ where: { id: packageId } });
-  if (!pkg) {
-    return NextResponse.json({ error: "Package not found" }, { status: 404 });
-  }
-
-  // Availability check
-  const date = new Date(travelDate);
-  const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(date);
-  endOfDay.setHours(23, 59, 59, 999);
-
-  const result = await prisma.booking.aggregate({
-    _sum: { guests: true },
-    where: {
-      packageId,
-      status: { not: "cancelled" },
-      travelDate: { gte: startOfDay, lte: endOfDay },
-    },
-  });
-
-  const booked = result._sum.guests || 0;
-  if (booked + guestCount > pkg.maxGroupSize) {
-    return NextResponse.json(
-      { error: `Only ${pkg.maxGroupSize - booked} spot${pkg.maxGroupSize - booked === 1 ? "" : "s"} left for this date` },
-      { status: 409 },
-    );
-  }
-
-  const booking = await prisma.booking.create({
-    data: {
-      userId: session.user.id,
-      packageId,
-      travelDate: date,
-      guests: guestCount,
-      totalPrice: pkg.price * guestCount,
-      name: name || null,
-      email: email || null,
-      phone: phone || null,
-      specialRequests: specialRequests || null,
-    },
-  });
-
-  return NextResponse.json(booking);
 }
