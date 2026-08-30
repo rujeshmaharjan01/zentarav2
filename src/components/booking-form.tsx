@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface BookingFormProps {
   packageId: string;
   price: number;
+  maxGroupSize?: number;
 }
 
-export function BookingForm({ packageId, price }: BookingFormProps) {
+export function BookingForm({ packageId, price, maxGroupSize = 20 }: BookingFormProps) {
   const router = useRouter();
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(1);
@@ -42,9 +44,12 @@ export function BookingForm({ packageId, price }: BookingFormProps) {
         throw new Error(data.error || "Failed to create booking");
       }
 
+      toast.success("Booking created!", { description: "Check your email for confirmation." });
       router.push("/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -69,7 +74,7 @@ export function BookingForm({ packageId, price }: BookingFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="guests">Number of Guests</Label>
-            <Input id="guests" type="number" min={1} max={20} value={guests} onChange={(e) => setGuests(parseInt(e.target.value) || 1)} />
+            <Input id="guests" type="number" min={1} max={maxGroupSize} value={guests} onChange={(e) => setGuests(parseInt(e.target.value) || 1)} />
           </div>
 
           <div className="pt-3 border-t">

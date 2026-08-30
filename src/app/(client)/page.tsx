@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MapPin, Globe, Shield, DollarSign, Phone, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
+import { OrganizationJsonLd } from "@/components/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +32,9 @@ const features = [
 ];
 
 export default async function HomePage() {
-  let bestSelling: any[] = [];
-  let shortTreks: any[] = [];
-  let tours: any[] = [];
+  let bestSelling: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
+  let shortTreks: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
+  let tours: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
   try {
     [bestSelling, shortTreks, tours] = await Promise.all([
       prisma.package.findMany({
@@ -58,6 +59,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col">
+      <OrganizationJsonLd />
       <section className="relative h-[600px] sm:h-[700px] md:h-[800px] flex items-center justify-center overflow-hidden">
         <video
           autoPlay
@@ -78,7 +80,7 @@ export default async function HomePage() {
           className="absolute inset-0 h-full w-full object-cover md:hidden"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/40" />
 
         <div className="relative z-10 w-full px-4 text-center">
           <div className="mx-auto max-w-[780px]">

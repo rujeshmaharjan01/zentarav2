@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { Badge } from "@/components/ui/badge";
 import { SectionNav } from "@/components/package-detail/section-nav";
 import { TripStats } from "@/components/package-detail/trip-stats";
@@ -10,49 +12,92 @@ import { WhyBookUs } from "@/components/package-detail/why-book-us";
 import { FaqSection } from "@/components/package-detail/faq-section";
 import { SimilarTrips } from "@/components/package-detail/similar-trips";
 import { BookingForm } from "@/components/booking-form";
-import { Shield, CreditCard, Clock, Star } from "lucide-react";
+import { ImageGallery } from "@/components/package-detail/image-gallery";
+import { Reviews } from "@/components/package-detail/reviews";
+import { ShareButtons } from "@/components/package-detail/share-buttons";
+import { Shield, CreditCard, Clock, ChevronRight, Home } from "lucide-react";
+import Link from "next/link";
 import type { ItineraryDay } from "@/lib/types";
+import type { Metadata } from "next";
+import { TouristTripJsonLd } from "@/components/json-ld";
 
 export const dynamic = "force-dynamic";
 
+type PageProps = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const pkg = await prisma.package.findUnique({ where: { id }, select: { title: true, description: true, imageUrl: true, destination: true, price: true } });
+  if (!pkg) return {};
+  return {
+    title: `${pkg.title} - Zentara Travels`,
+    description: pkg.description.slice(0, 160),
+    openGraph: {
+      title: `${pkg.title} - Zentara Travels`,
+      description: pkg.description.slice(0, 160),
+      images: pkg.imageUrl ? [pkg.imageUrl] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: pkg.title,
+      description: pkg.description.slice(0, 160),
+      images: pkg.imageUrl ? [pkg.imageUrl] : [],
+    },
+  };
+}
+
 export default async function PackageDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const pkg = await prisma.package.findUnique({ where: { id } });
+  const [pkg, session] = await Promise.all([
+    prisma.package.findUnique({ where: { id } }),
+    auth.api.getSession({ headers: await headers() }),
+  ]);
 
   if (!pkg) notFound();
 
   const highlights = (pkg.highlights as unknown as string[]) || [];
   const itinerary = (pkg.itinerary as unknown as ItineraryDay[]) || [];
+  const images = (pkg.images as unknown as string[]) || [];
 
   return (
     <>
+      <TouristTripJsonLd
+        name={pkg.title}
+        description={pkg.description}
+        url={`https://zentaratravels.com/packages/${pkg.id}`}
+        image={pkg.imageUrl || undefined}
+        price={pkg.price}
+        duration={`${pkg.duration}`}
+      />
       <SectionNav />
 
       <div className="container mx-auto px-4 py-8 pb-24 lg:pb-8">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
+          <Link href="/" className="hover:text-foreground transition-colors"><Home className="h-3.5 w-3.5" /></Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link href="/packages" className="hover:text-foreground transition-colors">Packages</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-foreground font-medium truncate max-w-[200px]">{pkg.title}</span>
+        </nav>
+
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
           {/* Main Content */}
           <div className="space-y-10">
-            {/* Hero Image */}
+            {/* Hero Image Gallery */}
             <section id="overview" className="scroll-mt-28">
-              <div className="relative aspect-video lg:aspect-[21/9] rounded-xl overflow-hidden bg-muted">
-                {pkg.imageUrl ? (
-                  <img src={pkg.imageUrl} alt={pkg.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
-                )}
+              <div className="relative">
+                <ImageGallery images={images} mainImage={pkg.imageUrl} alt={pkg.title} />
                 {pkg.tag && (
-                  <Badge className="absolute top-4 left-4" variant="secondary">{pkg.tag}</Badge>
+                  <Badge className="absolute top-4 left-4 z-10" variant="secondary">{pkg.tag}</Badge>
                 )}
-                <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                  <Badge className="bg-yellow-500 text-white border-0">
-                    <Star className="h-3 w-3 fill-white mr-0.5" /> {pkg.rating}
-                  </Badge>
-                  <span className="text-white text-sm font-medium drop-shadow">{pkg.reviewCount} reviews</span>
-                </div>
               </div>
 
               <div className="mt-6 space-y-4">
-                <h1 className="text-3xl md:text-4xl font-bold">{pkg.title}</h1>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <h1 className="text-3xl md:text-4xl font-bold">{pkg.title}</h1>
+                  <ShareButtons title={pkg.title} url={`https://zentaratravels.com/packages/${pkg.id}`} />
+                </div>
                 <TripStats
                   destination={pkg.destination}
                   duration={pkg.duration}
@@ -104,6 +149,12 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
               <FaqSection />
             </section>
 
+            {/* Reviews */}
+            <section id="reviews" className="scroll-mt-28">
+              <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+              <Reviews packageId={pkg.id} isLoggedIn={!!session} />
+            </section>
+
             {/* Similar Trips */}
             <section>
               <h2 className="text-xl font-semibold mb-4">You Might Also Like</h2>
@@ -114,7 +165,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
           {/* Sticky Sidebar */}
           <div className="hidden lg:block">
             <div className="sticky top-20">
-              <BookingForm packageId={pkg.id} price={pkg.price} />
+              <BookingForm packageId={pkg.id} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
 
               <div className="mt-4 space-y-3 rounded-lg border p-4">
                 <div className="flex items-center gap-2 text-sm">
@@ -136,7 +187,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
 
         {/* Mobile Booking Form — full width below content */}
         <div id="booking" className="lg:hidden pb-20">
-          <BookingForm packageId={pkg.id} price={pkg.price} />
+          <BookingForm packageId={pkg.id} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
         </div>
       </div>
 

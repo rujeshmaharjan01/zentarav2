@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { MapPin, Calendar, Users, Compass } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +27,12 @@ export default async function DashboardPage() {
 
       {bookings.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            No bookings yet. <a href="/packages" className="text-primary hover:underline">Browse packages</a> to get started.
+          <CardContent className="py-12 text-center space-y-3">
+            <Compass className="h-12 w-12 mx-auto text-muted-foreground/50" />
+            <p className="text-muted-foreground">No bookings yet.</p>
+            <a href="/packages" className="inline-flex items-center text-primary hover:underline font-medium">
+              Browse packages →
+            </a>
           </CardContent>
         </Card>
       ) : (

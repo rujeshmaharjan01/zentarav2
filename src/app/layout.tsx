@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -8,8 +9,24 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Zentara Travels",
-  description: "Discover amazing travel destinations and book your dream vacation",
+  title: {
+    default: "Zentara Travels - Nepal Tours & Trekking",
+    template: "%s | Zentara Travels",
+  },
+  description: "Discover Nepal's majestic Himalayas with expert-guided treks and tours. Everest Base Camp, Annapurna Circuit, Chitwan Safari, and more. Book your dream adventure today.",
+  keywords: ["Nepal trekking", "Everest Base Camp", "Annapurna Circuit", "Nepal tours", "Himalayan adventure", "Kathmandu", "Pokhara", "Chitwan Safari"],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Zentara Travels",
+    title: "Zentara Travels - Nepal Tours & Trekking",
+    description: "Discover Nepal's majestic Himalayas with expert-guided treks and tours.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zentara Travels - Nepal Tours & Trekking",
+    description: "Discover Nepal's majestic Himalayas with expert-guided treks and tours.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -17,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
+        <Toaster />
       </body>
     </html>
   );

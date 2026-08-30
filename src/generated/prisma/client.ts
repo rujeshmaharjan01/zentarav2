@@ -71,3 +71,8 @@ export type Package = Prisma.PackageModel
  * 
  */
 export type Booking = Prisma.BookingModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel

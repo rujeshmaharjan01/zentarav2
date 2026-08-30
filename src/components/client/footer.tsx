@@ -10,9 +10,9 @@ const quickLinks = [
 ];
 
 const destinations = [
-  { label: "Nepal", href: "/packages?destination=Nepal" },
-  { label: "Bhutan", href: "/packages?destination=Bhutan" },
-  { label: "Tibet", href: "/packages?destination=Tibet" },
+  { label: "Nepal", href: "/destinations/nepal" },
+  { label: "Bhutan", href: "/destinations/bhutan" },
+  { label: "Tibet", href: "/destinations/tibet" },
 ];
 
 const socials = [

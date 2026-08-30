@@ -10,20 +10,31 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import type { ItineraryDay } from "@/lib/types";
+import type { Package } from "@/generated/prisma/client";
 
-interface ItineraryDay {
-  title: string;
-  description: string;
-  trekTime: string;
-  driveTime: string;
-  accommodation: string;
-  elevation: string;
-  distance: string;
-  meals: string;
-  overnight: string;
+type FormDataDay = Record<keyof Omit<ItineraryDay, "day">, string>;
+
+interface PackageFormProps {
+  initialData?: Partial<Pick<Package, "title" | "description" | "destination" | "imageUrl" | "category" | "tag" | "price" | "duration" | "maxGroupSize" | "rating" | "available" | "highlights" | "itinerary">>;
+  mode: "create" | "update";
+  packageId?: string;
 }
 
-interface PackageFormData {
+const emptyDay: FormDataDay = {
+  title: "",
+  description: "",
+  trekTime: "",
+  driveTime: "",
+  accommodation: "",
+  elevation: "",
+  distance: "",
+  meals: "",
+  overnight: "",
+};
+
+type PackageFormState = {
   title: string;
   description: string;
   destination: string;
@@ -36,83 +47,41 @@ interface PackageFormData {
   rating: string;
   available: boolean;
   highlights: string;
-  itinerary: ItineraryDay[];
-}
-
-const emptyDay: ItineraryDay = {
-  title: "",
-  description: "",
-  trekTime: "",
-  driveTime: "",
-  accommodation: "",
-  elevation: "",
-  distance: "",
-  meals: "",
-  overnight: "",
+  itinerary: FormDataDay[];
 };
 
-function makeInitial(data?: Record<string, any>): PackageFormData {
+function makeInitial(data?: PackageFormProps["initialData"]): PackageFormState {
   if (!data) {
     return {
-      title: "",
-      description: "",
-      destination: "",
-      imageUrl: "",
-      category: "trek",
-      tag: "",
-      price: "",
-      duration: "",
-      maxGroupSize: "20",
-      rating: "5",
-      available: true,
-      highlights: "",
-      itinerary: [],
+      title: "", description: "", destination: "", imageUrl: "",
+      category: "trek", tag: "", price: "", duration: "",
+      maxGroupSize: "20", rating: "5", available: true,
+      highlights: "", itinerary: [],
     };
   }
 
-  const rawItinerary = data.itinerary;
-  let itinerary: ItineraryDay[] = [];
-  if (Array.isArray(rawItinerary)) {
-    itinerary = rawItinerary.map((d: any) => ({
-      title: d.title || "",
-      description: d.description || "",
-      trekTime: d.trekTime || "",
-      driveTime: d.driveTime || "",
-      accommodation: d.accommodation || "",
-      elevation: d.elevation || "",
-      distance: d.distance || "",
-      meals: d.meals || "",
-      overnight: d.overnight || "",
-    }));
-  }
+  const itinerary: FormDataDay[] = Array.isArray(data.itinerary)
+    ? (data.itinerary as unknown as Record<string, string>[]).map((d) => ({
+        title: d.title || "", description: d.description || "",
+        trekTime: d.trekTime || "", driveTime: d.driveTime || "",
+        accommodation: d.accommodation || "", elevation: d.elevation || "",
+        distance: d.distance || "", meals: d.meals || "", overnight: d.overnight || "",
+      }))
+    : [];
 
-  const rawHighlights = data.highlights;
-  let highlights = "";
-  if (Array.isArray(rawHighlights)) {
-    highlights = rawHighlights.join("\n");
-  }
+  const highlights = Array.isArray(data.highlights)
+    ? (data.highlights as string[]).join("\n")
+    : "";
 
   return {
-    title: data.title || "",
-    description: data.description || "",
-    destination: data.destination || "",
-    imageUrl: data.imageUrl || "",
-    category: data.category || "trek",
-    tag: data.tag || "",
-    price: String(data.price ?? ""),
-    duration: String(data.duration ?? ""),
+    title: data.title || "", description: data.description || "",
+    destination: data.destination || "", imageUrl: data.imageUrl || "",
+    category: data.category || "trek", tag: data.tag || "",
+    price: String(data.price ?? ""), duration: String(data.duration ?? ""),
     maxGroupSize: String(data.maxGroupSize ?? "20"),
-    rating: String(data.rating ?? "5"),
-    available: data.available ?? true,
-    highlights,
-    itinerary,
+    rating: String(data.rating ?? "5"), available: data.available ?? true,
+    highlights, itinerary,
   };
-}
-
-interface PackageFormProps {
-  initialData?: Record<string, any>;
-  mode: "create" | "update";
-  packageId?: string;
 }
 
 export function PackageForm({ initialData, mode, packageId }: PackageFormProps) {
@@ -121,11 +90,11 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
   const [form, setForm] = useState(makeInitial(initialData));
   const [openDays, setOpenDays] = useState<Set<number>>(new Set([0]));
 
-  function set<K extends keyof PackageFormData>(key: K, value: PackageFormData[K]) {
+  function set<K extends keyof PackageFormState>(key: K, value: PackageFormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function setDay(i: number, key: keyof ItineraryDay, value: string) {
+  function setDay(i: number, key: keyof FormDataDay, value: string) {
     setForm((prev) => {
       const days = [...prev.itinerary];
       days[i] = { ...days[i], [key]: value };
@@ -196,8 +165,11 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
     });
 
     if (res.ok) {
+      toast.success(mode === "create" ? "Package created!" : "Package updated!");
       router.push("/admin/packages");
       router.refresh();
+    } else {
+      toast.error("Failed to save package");
     }
   }
 

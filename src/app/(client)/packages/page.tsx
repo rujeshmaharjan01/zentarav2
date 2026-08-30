@@ -1,8 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
 import { SearchForm } from "./search-form";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Travel Packages - Zentara Travels",
+  description: "Browse our curated collection of Nepal treks, tours, and adventure packages. Find your perfect Himalayan getaway.",
+  openGraph: {
+    title: "Travel Packages - Zentara Travels",
+    description: "Browse our curated collection of Nepal treks, tours, and adventure packages.",
+  },
+};
 
 export default async function PackagesPage({
   searchParams,

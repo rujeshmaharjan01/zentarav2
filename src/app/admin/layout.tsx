@@ -1,16 +1,12 @@
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/admin-auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/sign-in");
-
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!user || user.role !== "admin") redirect("/");
+  const user = await getSessionUser(await headers());
+  if (!user) redirect("/sign-in");
 
   return (
     <div className="flex h-screen overflow-hidden">

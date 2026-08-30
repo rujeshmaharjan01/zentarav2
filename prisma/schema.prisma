@@ -19,6 +19,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   bookings      Booking[]
+  reviews       Review[]
 
   @@unique([email])
   @@map("user")
@@ -82,6 +83,7 @@ model Package {
   price        Float
   duration     Int
   imageUrl     String?
+  images       Json      @default("[]")
   available    Boolean   @default(true)
   maxGroupSize Int       @default(20)
   category     String    @default("trek")
@@ -92,6 +94,7 @@ model Package {
   itinerary    Json      @default("[]")
   createdAt    DateTime  @default(now())
   bookings     Booking[]
+  reviews      Review[]
 }
 
 model Booking {
@@ -108,4 +111,19 @@ model Booking {
 
   @@index([userId])
   @@index([packageId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  packageId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  package   Package  @relation(fields: [packageId], references: [id])
+
+  @@index([userId])
+  @@index([packageId])
+  @@unique([userId, packageId])
 }
