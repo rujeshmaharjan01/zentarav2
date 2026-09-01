@@ -5,6 +5,7 @@ import { MapPin, Globe, Shield, DollarSign, Phone } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 import { OrganizationJsonLd } from "@/components/json-ld";
+import Image from "next/image";
 
 export const revalidate = 60;
 
@@ -32,27 +33,9 @@ const features = [
 ];
 
 export default async function HomePage() {
-  let bestSelling: Awaited<
-    ReturnType<
-      typeof prisma.package.findMany<{
-        include: { destinationRel: { select: { name: true } } };
-      }>
-    >
-  > = [];
-  let shortTreks: Awaited<
-    ReturnType<
-      typeof prisma.package.findMany<{
-        include: { destinationRel: { select: { name: true } } };
-      }>
-    >
-  > = [];
-  let tours: Awaited<
-    ReturnType<
-      typeof prisma.package.findMany<{
-        include: { destinationRel: { select: { name: true } } };
-      }>
-    >
-  > = [];
+  let bestSelling: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
+  let shortTreks: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
+  let tours: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
   try {
     [bestSelling, shortTreks, tours] = await Promise.all([
       prisma.package.findMany({
@@ -99,11 +82,13 @@ export default async function HomePage() {
             type="video/mp4"
           />
         </video>
-        <img
+        <Image
           src="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=1260&h=750&dpr=1"
           alt="Himalayan sunset panorama"
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw"
           className="absolute inset-0 w-full object-cover md:hidden"
-          style={{ height: 800 }}
         />
 
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/40" />

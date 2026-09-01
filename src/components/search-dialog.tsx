@@ -42,10 +42,7 @@ export function SearchDialog() {
   }, []);
 
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      return;
-    }
+    if (!query.trim()) return;
     const timeout = setTimeout(() => {
       fetch(`/api/search?q=${encodeURIComponent(query.trim())}`)
         .then((r) => r.json())
@@ -81,9 +78,9 @@ export function SearchDialog() {
         </kbd>
       </button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog  open={open} onOpenChange={setOpen}>
         <Command>
-        <CommandInput placeholder="Search packages, destinations..." value={query} onValueChange={setQuery} />
+        <CommandInput placeholder="Search packages, destinations..." value={query} onValueChange={(val) => { setQuery(val); if (!val.trim()) setResults([]); }} />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 

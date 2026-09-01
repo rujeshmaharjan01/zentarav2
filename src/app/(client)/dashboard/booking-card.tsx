@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, ExternalLink, Star, Clock, CheckCircle, XCircle } from "lucide-react";
+import { MapPin, Calendar, Users, ExternalLink, Star, XCircle } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { ReviewDialog } from "./review-dialog";
 import { toast } from "sonner";
@@ -36,43 +37,12 @@ interface BookingCardProps {
   onReviewSubmitted: () => void;
 }
 
-const statusSteps = ["pending", "confirmed", "completed"];
 const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   pending: "secondary",
   confirmed: "default",
   completed: "outline",
   cancelled: "destructive",
 };
-
-function StatusTimeline({ status }: { status: string }) {
-  const isCancelled = status === "cancelled";
-  const currentIndex = statusSteps.indexOf(status);
-
-  return (
-    <div className="flex items-center gap-1.5">
-      {statusSteps.map((step, i) => {
-        const isComplete = !isCancelled && i <= currentIndex;
-        const isCurrent = !isCancelled && i === currentIndex;
-        return (
-          <div key={step} className="flex items-center gap-1.5">
-            {i > 0 && <div className={cn("h-px w-4", isComplete ? "bg-primary" : "bg-muted")} />}
-            <div className={cn(
-              "flex items-center gap-1 text-xs",
-              isCurrent ? "text-primary font-medium" : isComplete ? "text-foreground" : "text-muted-foreground"
-            )}>
-              {isComplete ? (
-                <CheckCircle className="h-3.5 w-3.5" />
-              ) : (
-                <Clock className="h-3.5 w-3.5" />
-              )}
-              <span className="hidden sm:inline">{step.charAt(0).toUpperCase() + step.slice(1)}</span>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 export function BookingCard({ booking, onCancelled, onReviewSubmitted }: BookingCardProps) {
   const [cancelling, setCancelling] = useState(false);
@@ -105,8 +75,8 @@ export function BookingCard({ booking, onCancelled, onReviewSubmitted }: Booking
   return (
     <Card className="overflow-hidden">
       {booking.package.imageUrl && (
-        <div className="h-32 sm:h-40 bg-muted">
-          <img src={booking.package.imageUrl} alt={booking.package.title} className="w-full h-full object-cover" />
+        <div className="relative h-32 sm:h-40 bg-muted">
+          <Image src={booking.package.imageUrl} alt={booking.package.title} fill sizes="(max-width: 640px) 100vw, 384px" className="object-cover" />
         </div>
       )}
       <CardHeader className="pb-3">
@@ -118,8 +88,6 @@ export function BookingCard({ booking, onCancelled, onReviewSubmitted }: Booking
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <StatusTimeline status={booking.status} />
-
         <div className="space-y-1.5 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <MapPin className="h-3.5 w-3.5" />

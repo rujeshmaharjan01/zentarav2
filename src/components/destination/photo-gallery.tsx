@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface PhotoGalleryProps {
   images: string[];
@@ -17,10 +17,8 @@ export function PhotoGallery({ images, name }: PhotoGalleryProps) {
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {images.map((img, i) => (
-          <button key={i} onClick={() => setSelected(img)} className="overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-            <AspectRatio ratio={1}>
-              <img src={img} alt={`${name} ${i + 1}`} className="h-full w-full object-cover transition-transform hover:scale-105" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
-            </AspectRatio>
+          <button key={i} onClick={() => setSelected(img)} className="relative aspect-square overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            <FallbackImage src={img} alt={`${name} ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform hover:scale-105" />
           </button>
         ))}
       </div>
@@ -28,10 +26,15 @@ export function PhotoGallery({ images, name }: PhotoGalleryProps) {
       <Dialog open={!!selected} onOpenChange={(open) => { if (!open) setSelected(null); }}>
         <DialogContent className="max-w-4xl p-0 bg-black border-0">
           {selected && (
-            <img src={selected} alt={name} className="w-full h-auto max-h-[85vh] object-contain" />
+            <FallbackImage src={selected} alt={name} width={1200} height={800} className="w-full h-auto max-h-[85vh] object-contain" />
           )}
         </DialogContent>
       </Dialog>
     </>
   );
+}
+
+function FallbackImage({ src, alt, ...props }: { src: string; alt: string } & Record<string, unknown>) {
+  const [imgSrc, setImgSrc] = useState(src);
+  return <Image src={imgSrc} alt={alt} {...props} onError={() => setImgSrc("/placeholder.svg")} />;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -276,9 +277,11 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
                 {form.imageUrl && !imgLoaded && !imgError && (
                   <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">Loading...</div>
                 )}
-                <img
+                <Image
                   src={form.imageUrl}
                   alt="Preview"
+                  width={600}
+                  height={160}
                   className="h-full w-full object-cover"
                   onLoad={() => setImgLoaded(true)}
                   onError={() => setImgError(true)}
@@ -338,9 +341,11 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
                 />
                 {url && (
                   <div className="shrink-0 h-16 w-24 overflow-hidden rounded-lg border bg-muted">
-                    <img
+                    <Image
                       src={url}
                       alt={`Gallery ${i + 1}`}
+                      width={96}
+                      height={64}
                       className="h-full w-full object-cover"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />

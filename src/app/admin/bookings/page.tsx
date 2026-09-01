@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Check, X, Loader2, Search, CheckCircle, Download, Eye } from "lucide-react";
 
@@ -122,20 +123,16 @@ export default function AdminBookingsPage() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-wrap gap-1.5">
-          {statusFilters.map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                filter === s
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-              <span className="ml-1.5 text-xs opacity-70">{counts[s]}</span>
-            </button>
-          ))}
+          <Tabs value={filter} onValueChange={(val) => setFilter(val as StatusFilter)}>
+            <TabsList>
+              {statusFilters.map((s) => (
+                <TabsTrigger key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                  <span className="ml-1.5 text-xs opacity-70">{counts[s]}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -143,7 +140,7 @@ export default function AdminBookingsPage() {
         </div>
       </div>
 
-      <Card>
+      <Card className="w-full">
         <CardContent className="pt-6">
           {loading ? (
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
@@ -223,7 +220,7 @@ export default function AdminBookingsPage() {
 
       {/* Detail Dialog */}
       <Dialog open={!!detailBooking} onOpenChange={(open) => { if (!open) setDetailBooking(null); }}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-xl">
           <DialogHeader>
             <DialogTitle>Booking Details</DialogTitle>
           </DialogHeader>

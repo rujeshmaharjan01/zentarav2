@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,12 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Loader2, Plus, X } from "lucide-react";
-
-interface DestinationData {
-  slug: string; name: string; description: string; image: string; heroImage: string | null;
-  continent: string; bestTime: string; travelTips: string; featured: boolean; order: number;
-  highlights: string[]; gallery: string[]; places: { name: string; description: string; image: string }[];
-}
 
 export function DestinationForm({ mode, id }: { mode: "create" | "update"; id?: string }) {
   const router = useRouter();
@@ -36,7 +31,7 @@ export function DestinationForm({ mode, id }: { mode: "create" | "update"; id?: 
     if (mode === "update" && id) {
       fetch(`/api/admin/destinations/${id}`)
         .then((r) => r.json())
-        .then((data: DestinationData) => {
+        .then((data: any) => {
           setForm({
             slug: data.slug, name: data.name, description: data.description,
             image: data.image, heroImage: data.heroImage || "",
@@ -234,7 +229,7 @@ export function DestinationForm({ mode, id }: { mode: "create" | "update"; id?: 
             <div className="grid grid-cols-4 gap-2">
               {gallery.map((url, i) => (
                 <div key={i} className="relative group">
-                  <img src={url} alt="" className="w-full h-20 object-cover rounded" />
+                  <Image src={url} alt="" width={96} height={80} className="w-full h-20 object-cover rounded" />
                   <button type="button" onClick={() => setGallery(gallery.filter((_, j) => j !== i))} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <X className="h-3 w-3" />
                   </button>

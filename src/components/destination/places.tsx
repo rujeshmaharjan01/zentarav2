@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -18,7 +22,7 @@ export function Places({ places }: PlacesProps) {
       {places.map((p) => (
         <Card key={p.name} className="overflow-hidden">
           <AspectRatio ratio={16 / 10}>
-            <img src={p.image} alt={p.name} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+            <PlaceImage src={p.image} alt={p.name} />
           </AspectRatio>
           <CardContent className="p-4">
             <h4 className="font-semibold mb-1">{p.name}</h4>
@@ -28,4 +32,10 @@ export function Places({ places }: PlacesProps) {
       ))}
     </div>
   );
+}
+
+function PlaceImage({ src, alt }: { src: string; alt: string }) {
+  const isValid = src && (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/"));
+  const [imgSrc, setImgSrc] = useState(isValid ? src : "/placeholder.svg");
+  return <Image src={imgSrc} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" onError={() => setImgSrc("/placeholder.svg")} />;
 }

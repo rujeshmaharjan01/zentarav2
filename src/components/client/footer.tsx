@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 const quickLinks = [
   { label: "Packages", href: "/packages" },
+  { label: "Contact", href: "/contact" },
   { label: "Sign In", href: "/sign-in" },
   { label: "Sign Up", href: "/sign-up" },
   { label: "My Bookings", href: "/dashboard" },

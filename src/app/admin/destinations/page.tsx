@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -82,7 +83,7 @@ export default function AdminDestinationsPage() {
                     <TableRow key={d.id}>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
-                          <img src={d.image} alt={d.name} className="h-10 w-14 rounded object-cover" />
+                          <Image src={d.image} alt={d.name} width={56} height={40} className="h-10 w-14 rounded object-cover" />
                           {d.name}
                         </div>
                       </TableCell>

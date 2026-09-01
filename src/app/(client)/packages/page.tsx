@@ -5,22 +5,30 @@ import { CategoryFilter } from "./category-filter";
 import { PriceFilter } from "./price-filter";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Travel Packages - Zentara Travels",
-  description: "Browse our curated collection of Nepal treks, tours, and adventure packages. Find your perfect Himalayan getaway.",
+  description:
+    "Browse our curated collection of Nepal treks, tours, and adventure packages. Find your perfect Himalayan getaway.",
   openGraph: {
     title: "Travel Packages - Zentara Travels",
-    description: "Browse our curated collection of Nepal treks, tours, and adventure packages.",
+    description:
+      "Browse our curated collection of Nepal treks, tours, and adventure packages.",
   },
 };
 
 export default async function PackagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string; minPrice?: string; maxPrice?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>;
 }) {
   const { q, category, minPrice, maxPrice } = await searchParams;
 
@@ -33,7 +41,9 @@ export default async function PackagesPage({
       ...(q
         ? {
             OR: [
-              { destinationRel: { name: { contains: q, mode: "insensitive" } } },
+              {
+                destinationRel: { name: { contains: q, mode: "insensitive" } },
+              },
               { title: { contains: q, mode: "insensitive" } },
             ],
           }
@@ -66,7 +76,7 @@ export default async function PackagesPage({
           </p>
         </div>
         <SearchForm defaultValue={q ?? ""} />
-        <Suspense>
+        <Suspense fallback={<div className="flex flex-col sm:flex-row gap-4"><div className="h-10 w-48 bg-muted animate-pulse rounded-lg" /><div className="h-10 w-64 bg-muted animate-pulse rounded-lg" /></div>}>
           <div className="flex flex-col sm:flex-row gap-4">
             <CategoryFilter />
             <PriceFilter />
@@ -79,9 +89,9 @@ export default async function PackagesPage({
           {q ? (
             <>
               No packages match &quot;{q}&quot;.{" "}
-              <a href="/packages" className="text-primary hover:underline">
+              <Link href="/packages" className="text-primary hover:underline">
                 View all packages
-              </a>
+              </Link>
             </>
           ) : (
             "No packages available yet. Check back soon!"
@@ -94,7 +104,7 @@ export default async function PackagesPage({
               key={pkg.id}
               id={pkg.id}
               title={pkg.title}
-               destination={pkg.destinationRel?.name ?? ""}
+              destination={pkg.destinationRel?.name ?? ""}
               price={pkg.price}
               duration={pkg.duration}
               imageUrl={pkg.imageUrl}

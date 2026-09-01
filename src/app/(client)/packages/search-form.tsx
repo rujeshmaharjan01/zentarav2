@@ -38,7 +38,7 @@ export function SearchForm({ defaultValue = "" }: { defaultValue?: string }) {
             type="button"
             onClick={handleClear}
             aria-label="Clear search"
-            className="shrink-0 text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="shrink-0 text-muted-foreground hover:text-foreground min-h-11 min-w-11 flex items-center justify-center"
           >
             <X className="h-4 w-4" />
           </button>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Compass } from "lucide-react";
 import { BookingCard } from "./booking-card";
+import Link from "next/link";
 
 interface Booking {
   id: string;
@@ -101,9 +102,9 @@ export default function DashboardPage() {
           <CardContent className="py-12 text-center space-y-3">
             <Compass className="h-12 w-12 mx-auto text-muted-foreground/50" />
             <p className="text-muted-foreground">No bookings yet.</p>
-            <a href="/packages" className="inline-flex items-center text-primary hover:underline font-medium">
+            <Link href="/packages" className="inline-flex items-center text-primary hover:underline font-medium">
               Browse packages →
-            </a>
+            </Link>
           </CardContent>
         </Card>
       ) : (

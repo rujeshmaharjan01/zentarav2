@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
 import { Highlights } from "@/components/destination/highlights";
@@ -45,12 +46,7 @@ export default async function DestinationPage({ params }: PageProps) {
     <div className="flex flex-col">
       {/* Hero */}
       <section aria-labelledby="dest-hero-heading" className="relative h-[300px] sm:h-[400px] flex items-center justify-center overflow-hidden">
-        <img
-          src={dest.heroImage || dest.image}
-          alt={dest.name}
-          className="absolute inset-0 h-full w-full object-cover"
-          onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
-        />
+        <Image src={dest.heroImage || dest.image} alt={dest.name} fill sizes="100vw" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="relative z-10 text-center px-4">
           <h1 id="dest-hero-heading" className="text-white text-4xl sm:text-5xl md:text-6xl font-bold [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">

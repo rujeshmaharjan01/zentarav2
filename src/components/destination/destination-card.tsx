@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 
@@ -18,13 +18,15 @@ export function DestinationCard({ slug, name, description, image, packageCount, 
     <Link href={`/destinations/${slug}`}>
       <Card className="group overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
         <div className="relative">
-          <AspectRatio ratio={featured ? 16 / 9 : 4 / 3}>
-            <img
+          <div className={featured ? "aspect-video" : "aspect-[4/3]"}>
+            <Image
               src={image}
               alt={name}
-              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition-transform group-hover:scale-105"
             />
-          </AspectRatio>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 p-4">
             <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,7 +27,7 @@ export function ImageGallery({ images, mainImage, alt }: ImageGalleryProps) {
 
   if (allImages.length === 0) {
     return (
-      <div className="aspect-video lg:aspect-[21/9] rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
+      <div className="aspect-video lg:aspect-21/9 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
         No image
       </div>
     );
@@ -41,9 +42,9 @@ export function ImageGallery({ images, mainImage, alt }: ImageGalleryProps) {
               <CarouselItem key={i}>
                 <button
                   onClick={() => setLightboxOpen(true)}
-                  className="relative aspect-video lg:aspect-[21/9] rounded-xl overflow-hidden bg-muted block w-full"
+                  className="relative aspect-video lg:aspect-21/9 rounded-xl overflow-hidden bg-muted block w-full"
                 >
-                  <img src={img} alt={`${alt} ${i + 1}`} className="w-full h-full object-cover" />
+                  <Image src={img} alt={`${alt} ${i + 1}`} fill priority={i === 0} sizes="(max-width: 768px) 100vw, min(100vw - 2rem, 1200px)" className="object-cover" />
                 </button>
               </CarouselItem>
             ))}
@@ -64,11 +65,11 @@ export function ImageGallery({ images, mainImage, alt }: ImageGalleryProps) {
                   key={i}
                   onClick={() => onThumbClick(i)}
                   className={cn(
-                    "shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden ring-2 transition-all",
+                    "relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden ring-2 transition-all",
                     selected === i ? "ring-primary ring-offset-2" : "ring-transparent opacity-60 hover:opacity-100"
                   )}
                 >
-                  <img src={img} alt={`${alt} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  <Image src={img} alt={`${alt} thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
                 </button>
               ))}
             </div>
@@ -80,7 +81,7 @@ export function ImageGallery({ images, mainImage, alt }: ImageGalleryProps) {
         <DialogContent showCloseButton={false} className="max-w-4xl w-full p-0 bg-black/95 border-0 rounded-xl overflow-hidden">
           <DialogTitle className="sr-only">{alt} - Image {selected + 1} of {allImages.length}</DialogTitle>
           <div className="relative">
-            <img src={allImages[selected]} alt={`${alt} ${selected + 1}`} className="w-full max-h-[80vh] object-contain" />
+            <Image src={allImages[selected]} alt={`${alt} ${selected + 1}`} width={1200} height={800} className="w-full max-h-[80vh] object-contain" />
             {allImages.length > 1 && (
               <>
                 <button onClick={() => setSelected((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))} className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors" aria-label="Previous image">

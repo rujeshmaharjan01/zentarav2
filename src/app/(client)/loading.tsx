@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function HomeLoading() {
   return (
     <div className="flex flex-col">
-      <div className="h-[600px] sm:h-[700px] md:h-[800px]">
+      <div className="h-150 sm:h-175 md:h-200">
         <Skeleton className="h-full w-full rounded-none" />
       </div>
       <section className="py-16 md:py-24">

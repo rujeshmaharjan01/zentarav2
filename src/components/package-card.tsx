@@ -1,9 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Clock, Users, ArrowRight, Star } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface PackageCardProps {
   id: string;
@@ -20,10 +20,10 @@ interface PackageCardProps {
 
 export function PackageCard({ id, title, destination, price, duration, imageUrl, maxGroupSize, tag, rating, reviewCount }: PackageCardProps) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow">
-      <AspectRatio ratio={16 / 9} className="relative bg-muted">
+    <Card className="hover:shadow-lg transition-shadow">
+      <div className="relative aspect-video bg-muted">
         {imageUrl ? (
-          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+          <Image src={imageUrl} alt={title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
             No image
@@ -35,33 +35,14 @@ export function PackageCard({ id, title, destination, price, duration, imageUrl,
           </Badge>
         )}
         <Badge className="absolute top-2 right-2">${price}</Badge>
-      </AspectRatio>
-      <div className="p-4 space-y-3">
+      </div>
+      <CardContent className="p-4 space-y-3">
         <div>
-          <HoverCard>
-            <HoverCardTrigger render={<a href={`/packages/${id}`} className="block" />}>
-              <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors cursor-pointer">
-                {title}
-              </h3>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80" side="top">
-              <div className="space-y-2">
-                {imageUrl && <img src={imageUrl} alt={title} className="w-full h-32 object-cover rounded-md" />}
-                <h4 className="font-semibold">{title}</h4>
-                <p className="text-sm text-muted-foreground">{destination}</p>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="font-medium">${price}/person</span>
-                  <span>{duration} days</span>
-                  {rating !== undefined && (
-                    <span className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      {rating}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+          <Link href={`/packages/${id}`} className="block">
+            <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors cursor-pointer">
+              {title}
+            </h3>
+          </Link>
           <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
             <MapPin className="h-3.5 w-3.5" />
             {destination}
@@ -88,7 +69,7 @@ export function PackageCard({ id, title, destination, price, duration, imageUrl,
           View Details
           <ArrowRight className="h-4 w-4 ml-2" />
         </Link>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

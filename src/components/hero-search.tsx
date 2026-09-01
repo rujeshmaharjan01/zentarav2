@@ -32,7 +32,7 @@ export function HeroSearch() {
   }
 
   return (
-    <div className="mt-8 mx-auto w-full max-w-[580px]">
+    <div className="mt-8 mx-auto w-full max-w-145">
       <form onSubmit={handleSearch}>
         <div className="flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 backdrop-blur-md px-4 py-2 shadow-lg transition hover:bg-white/15 focus-within:ring-white/40">
           <Search className="h-5 w-5 shrink-0 text-white/60" />
