@@ -8,7 +8,7 @@ export async function GET(request: Request) {
 
   const packages = await prisma.package.findMany({
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { bookings: true } } },
+    include: { _count: { select: { bookings: true } }, destinationRel: { select: { name: true } } },
   });
 
   return NextResponse.json(packages);

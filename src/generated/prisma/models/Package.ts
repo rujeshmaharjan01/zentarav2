@@ -46,7 +46,6 @@ export type PackageMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  destination: string | null
   destinationId: string | null
   price: number | null
   duration: number | null
@@ -64,7 +63,6 @@ export type PackageMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  destination: string | null
   destinationId: string | null
   price: number | null
   duration: number | null
@@ -82,7 +80,6 @@ export type PackageCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  destination: number
   destinationId: number
   price: number
   duration: number
@@ -121,7 +118,6 @@ export type PackageMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  destination?: true
   destinationId?: true
   price?: true
   duration?: true
@@ -139,7 +135,6 @@ export type PackageMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  destination?: true
   destinationId?: true
   price?: true
   duration?: true
@@ -157,7 +152,6 @@ export type PackageCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  destination?: true
   destinationId?: true
   price?: true
   duration?: true
@@ -265,7 +259,6 @@ export type PackageGroupByOutputType = {
   id: string
   title: string
   description: string
-  destination: string
   destinationId: string | null
   price: number
   duration: number
@@ -309,7 +302,6 @@ export type PackageWhereInput = {
   id?: Prisma.StringFilter<"Package"> | string
   title?: Prisma.StringFilter<"Package"> | string
   description?: Prisma.StringFilter<"Package"> | string
-  destination?: Prisma.StringFilter<"Package"> | string
   destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
   price?: Prisma.FloatFilter<"Package"> | number
   duration?: Prisma.IntFilter<"Package"> | number
@@ -333,7 +325,6 @@ export type PackageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  destination?: Prisma.SortOrder
   destinationId?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -360,7 +351,6 @@ export type PackageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PackageWhereInput | Prisma.PackageWhereInput[]
   title?: Prisma.StringFilter<"Package"> | string
   description?: Prisma.StringFilter<"Package"> | string
-  destination?: Prisma.StringFilter<"Package"> | string
   destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
   price?: Prisma.FloatFilter<"Package"> | number
   duration?: Prisma.IntFilter<"Package"> | number
@@ -384,7 +374,6 @@ export type PackageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  destination?: Prisma.SortOrder
   destinationId?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -413,7 +402,6 @@ export type PackageScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Package"> | string
   title?: Prisma.StringWithAggregatesFilter<"Package"> | string
   description?: Prisma.StringWithAggregatesFilter<"Package"> | string
-  destination?: Prisma.StringWithAggregatesFilter<"Package"> | string
   destinationId?: Prisma.StringNullableWithAggregatesFilter<"Package"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Package"> | number
   duration?: Prisma.IntWithAggregatesFilter<"Package"> | number
@@ -434,7 +422,6 @@ export type PackageCreateInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -457,7 +444,6 @@ export type PackageUncheckedCreateInput = {
   id?: string
   title: string
   description: string
-  destination: string
   destinationId?: string | null
   price: number
   duration: number
@@ -480,7 +466,6 @@ export type PackageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -503,7 +488,6 @@ export type PackageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
@@ -526,7 +510,6 @@ export type PackageCreateManyInput = {
   id?: string
   title: string
   description: string
-  destination: string
   destinationId?: string | null
   price: number
   duration: number
@@ -547,7 +530,6 @@ export type PackageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -567,7 +549,6 @@ export type PackageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
@@ -598,7 +579,6 @@ export type PackageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  destination?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -627,7 +607,6 @@ export type PackageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  destination?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -645,7 +624,6 @@ export type PackageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  destination?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -754,7 +732,6 @@ export type PackageCreateWithoutDestinationRelInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -776,7 +753,6 @@ export type PackageUncheckedCreateWithoutDestinationRelInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -827,7 +803,6 @@ export type PackageScalarWhereInput = {
   id?: Prisma.StringFilter<"Package"> | string
   title?: Prisma.StringFilter<"Package"> | string
   description?: Prisma.StringFilter<"Package"> | string
-  destination?: Prisma.StringFilter<"Package"> | string
   destinationId?: Prisma.StringNullableFilter<"Package"> | string | null
   price?: Prisma.FloatFilter<"Package"> | number
   duration?: Prisma.IntFilter<"Package"> | number
@@ -848,7 +823,6 @@ export type PackageCreateWithoutBookingsInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -870,7 +844,6 @@ export type PackageUncheckedCreateWithoutBookingsInput = {
   id?: string
   title: string
   description: string
-  destination: string
   destinationId?: string | null
   price: number
   duration: number
@@ -908,7 +881,6 @@ export type PackageUpdateWithoutBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -930,7 +902,6 @@ export type PackageUncheckedUpdateWithoutBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
@@ -952,7 +923,6 @@ export type PackageCreateWithoutReviewsInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -974,7 +944,6 @@ export type PackageUncheckedCreateWithoutReviewsInput = {
   id?: string
   title: string
   description: string
-  destination: string
   destinationId?: string | null
   price: number
   duration: number
@@ -1012,7 +981,6 @@ export type PackageUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1034,7 +1002,6 @@ export type PackageUncheckedUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1056,7 +1023,6 @@ export type PackageCreateManyDestinationRelInput = {
   id?: string
   title: string
   description: string
-  destination: string
   price: number
   duration: number
   imageUrl?: string | null
@@ -1076,7 +1042,6 @@ export type PackageUpdateWithoutDestinationRelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1098,7 +1063,6 @@ export type PackageUncheckedUpdateWithoutDestinationRelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1120,7 +1084,6 @@ export type PackageUncheckedUpdateManyWithoutDestinationRelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1180,7 +1143,6 @@ export type PackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   title?: boolean
   description?: boolean
-  destination?: boolean
   destinationId?: boolean
   price?: boolean
   duration?: boolean
@@ -1205,7 +1167,6 @@ export type PackageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  destination?: boolean
   destinationId?: boolean
   price?: boolean
   duration?: boolean
@@ -1227,7 +1188,6 @@ export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  destination?: boolean
   destinationId?: boolean
   price?: boolean
   duration?: boolean
@@ -1249,7 +1209,6 @@ export type PackageSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  destination?: boolean
   destinationId?: boolean
   price?: boolean
   duration?: boolean
@@ -1266,7 +1225,7 @@ export type PackageSelectScalar = {
   createdAt?: boolean
 }
 
-export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "destination" | "destinationId" | "price" | "duration" | "imageUrl" | "images" | "available" | "maxGroupSize" | "category" | "tag" | "rating" | "reviewCount" | "highlights" | "itinerary" | "createdAt", ExtArgs["result"]["package"]>
+export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "destinationId" | "price" | "duration" | "imageUrl" | "images" | "available" | "maxGroupSize" | "category" | "tag" | "rating" | "reviewCount" | "highlights" | "itinerary" | "createdAt", ExtArgs["result"]["package"]>
 export type PackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.Package$reviewsArgs<ExtArgs>
@@ -1291,7 +1250,6 @@ export type $PackagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     title: string
     description: string
-    destination: string
     destinationId: string | null
     price: number
     duration: number
@@ -1735,7 +1693,6 @@ export interface PackageFieldRefs {
   readonly id: Prisma.FieldRef<"Package", 'String'>
   readonly title: Prisma.FieldRef<"Package", 'String'>
   readonly description: Prisma.FieldRef<"Package", 'String'>
-  readonly destination: Prisma.FieldRef<"Package", 'String'>
   readonly destinationId: Prisma.FieldRef<"Package", 'String'>
   readonly price: Prisma.FieldRef<"Package", 'Float'>
   readonly duration: Prisma.FieldRef<"Package", 'Int'>

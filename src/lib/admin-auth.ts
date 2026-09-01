@@ -6,7 +6,6 @@ import { z } from "zod";
 export const PackageSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
-  destination: z.string().min(1),
   destinationId: z.string().nullable().optional(),
   price: z.number().positive(),
   duration: z.number().int().positive(),
@@ -24,7 +23,6 @@ export const PackageSchema = z.object({
 interface PackageInput {
   title: string;
   description: string;
-  destination: string;
   destinationId?: string | null;
   price: number;
   duration: number;
@@ -41,7 +39,7 @@ interface PackageInput {
 
 export function buildPackageData(b: PackageInput) {
   return {
-    title: b.title, description: b.description, destination: b.destination,
+    title: b.title, description: b.description,
     destinationId: b.destinationId || null,
     imageUrl: b.imageUrl || null, category: b.category || "trek", tag: b.tag || null,
     price: b.price, duration: b.duration, maxGroupSize: b.maxGroupSize || 20,

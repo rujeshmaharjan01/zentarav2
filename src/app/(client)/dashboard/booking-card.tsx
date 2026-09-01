@@ -24,8 +24,8 @@ interface Booking {
   package: {
     id: string;
     title: string;
-    destination: string;
     imageUrl?: string | null;
+    destinationRel: { name: string } | null;
   };
   hasReview?: boolean;
 }
@@ -123,7 +123,7 @@ export function BookingCard({ booking, onCancelled, onReviewSubmitted }: Booking
         <div className="space-y-1.5 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <MapPin className="h-3.5 w-3.5" />
-            {booking.package.destination}
+            {booking.package.destinationRel?.name ?? ""}
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="h-3.5 w-3.5" />

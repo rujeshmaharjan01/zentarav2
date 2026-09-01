@@ -28,7 +28,7 @@ type PageProps = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const pkg = await prisma.package.findUnique({ where: { id }, select: { title: true, description: true, imageUrl: true, destination: true, price: true } });
+  const pkg = await prisma.package.findUnique({ where: { id }, select: { title: true, description: true, imageUrl: true, price: true, destinationRel: { select: { name: true } } } });
   if (!pkg) return {};
   return {
     title: `${pkg.title} - Zentara Travels`,
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PackageDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [pkg, session] = await Promise.all([
-    prisma.package.findUnique({ where: { id } }),
+    prisma.package.findUnique({ where: { id }, include: { destinationRel: { select: { name: true } } } }),
     auth.api.getSession({ headers: await headers() }),
   ]);
 
@@ -102,13 +102,13 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
                   <ShareButtons title={pkg.title} url={`https://zentaratravels.com/packages/${pkg.id}`} />
                 </div>
                 <TripStats
-                  destination={pkg.destination}
-                  duration={pkg.duration}
-                  maxGroupSize={pkg.maxGroupSize}
-                  rating={pkg.rating}
-                  reviewCount={pkg.reviewCount}
-                  itinerary={itinerary}
-                />
+                   destination={pkg.destinationRel?.name ?? ""}
+                   duration={pkg.duration}
+                   maxGroupSize={pkg.maxGroupSize}
+                   rating={pkg.rating}
+                   reviewCount={pkg.reviewCount}
+                   itinerary={itinerary}
+                 />
               </div>
             </section>
 
@@ -168,7 +168,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
           {/* Sticky Sidebar */}
           <div className="hidden lg:block">
             <div className="sticky top-31">
-              <BookingForm packageId={pkg.id} packageName={pkg.title} packageDestination={pkg.destination} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
+              <BookingForm packageId={pkg.id} packageName={pkg.title} packageDestination={pkg.destinationRel?.name ?? ""} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
 
               <div className="mt-4 space-y-3 rounded-lg border p-4">
                 <div className="flex items-center gap-2 text-sm">
@@ -189,7 +189,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
         </div>
 
         {/* Mobile Booking Drawer */}
-        <MobileBookingDrawer packageId={pkg.id} packageName={pkg.title} packageDestination={pkg.destination} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
+        <MobileBookingDrawer packageId={pkg.id} packageName={pkg.title} packageDestination={pkg.destinationRel?.name ?? ""} price={pkg.price} maxGroupSize={pkg.maxGroupSize} />
       </div>
     </>
   );

@@ -11,6 +11,7 @@ export async function SimilarTrips({ category, currentId }: SimilarTripsProps) {
     where: { category, available: true, id: { not: currentId } },
     orderBy: { reviewCount: "desc" },
     take: 3,
+    include: { destinationRel: { select: { name: true } } },
   });
 
   if (!packages.length) return null;
@@ -22,7 +23,7 @@ export async function SimilarTrips({ category, currentId }: SimilarTripsProps) {
           key={pkg.id}
           id={pkg.id}
           title={pkg.title}
-          destination={pkg.destination}
+          destination={pkg.destinationRel?.name ?? ""}
           price={pkg.price}
           duration={pkg.duration}
           imageUrl={pkg.imageUrl}

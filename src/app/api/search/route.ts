@@ -15,11 +15,11 @@ export async function GET(req: Request) {
         available: true,
         OR: [
           { title: { contains: q, mode: "insensitive" } },
-          { destination: { contains: q, mode: "insensitive" } },
+          { destinationRel: { name: { contains: q, mode: "insensitive" } } },
         ],
       },
       take: 8,
-      select: { id: true, title: true, destination: true },
+      select: { id: true, title: true, destinationRel: { select: { name: true } } },
     }),
     prisma.destination.findMany({
       where: {
@@ -34,7 +34,7 @@ export async function GET(req: Request) {
   ]);
 
   const results = [
-    ...packages.map((p) => ({ ...p, type: "package" as const })),
+    ...packages.map((p) => ({ id: p.id, title: p.title, destination: p.destinationRel?.name ?? "", type: "package" as const })),
     ...destinations.map((d) => ({ id: d.slug, title: d.name, destination: d.description, type: "destination" as const })),
   ];
 

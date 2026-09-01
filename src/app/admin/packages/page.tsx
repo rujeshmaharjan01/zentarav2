@@ -12,7 +12,7 @@ import { Plus, Loader2 } from "lucide-react";
 interface Package {
   id: string;
   title: string;
-  destination: string;
+  destinationRel: { name: string } | null;
   price: number;
   duration: number;
   available: boolean;
@@ -86,7 +86,7 @@ export default function AdminPackagesPage() {
                   packages.map((pkg) => (
                     <TableRow key={pkg.id}>
                       <TableCell className="font-medium">{pkg.title}</TableCell>
-                      <TableCell>{pkg.destination}</TableCell>
+                      <TableCell>{pkg.destinationRel?.name ?? ""}</TableCell>
                       <TableCell>${pkg.price}</TableCell>
                       <TableCell>{pkg.duration} days</TableCell>
                       <TableCell>{pkg._count.bookings}</TableCell>

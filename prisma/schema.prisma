@@ -101,7 +101,6 @@ model Package {
   id            String      @id @default(cuid())
   title         String
   description   String
-  destination   String
   destinationId String?
   price         Float
   duration      Int

@@ -33,7 +33,7 @@ export default async function PackagesPage({
       ...(q
         ? {
             OR: [
-              { destination: { contains: q, mode: "insensitive" } },
+              { destinationRel: { name: { contains: q, mode: "insensitive" } } },
               { title: { contains: q, mode: "insensitive" } },
             ],
           }
@@ -49,6 +49,7 @@ export default async function PackagesPage({
         : {}),
     },
     orderBy: { createdAt: "desc" },
+    include: { destinationRel: { select: { name: true } } },
   });
 
   return (
@@ -93,7 +94,7 @@ export default async function PackagesPage({
               key={pkg.id}
               id={pkg.id}
               title={pkg.title}
-              destination={pkg.destination}
+               destination={pkg.destinationRel?.name ?? ""}
               price={pkg.price}
               duration={pkg.duration}
               imageUrl={pkg.imageUrl}

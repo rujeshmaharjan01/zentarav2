@@ -18,7 +18,7 @@ type FormDataDay = Record<keyof Omit<ItineraryDay, "day">, string>;
 interface Destination { id: string; name: string; slug: string; }
 
 interface PackageFormProps {
-  initialData?: Partial<Pick<Package, "title" | "description" | "destination" | "destinationId" | "imageUrl" | "category" | "tag" | "price" | "duration" | "maxGroupSize" | "rating" | "available" | "highlights" | "itinerary" | "images">>;
+  initialData?: Partial<Pick<Package, "title" | "description" | "destinationId" | "imageUrl" | "category" | "tag" | "price" | "duration" | "maxGroupSize" | "rating" | "available" | "highlights" | "itinerary" | "images">>;
   mode: "create" | "update";
   packageId?: string;
 }
@@ -38,7 +38,6 @@ const emptyDay: FormDataDay = {
 type PackageFormState = {
   title: string;
   description: string;
-  destination: string;
   destinationId: string;
   imageUrl: string;
   category: string;
@@ -56,7 +55,7 @@ type PackageFormState = {
 function makeInitial(data?: PackageFormProps["initialData"]): PackageFormState {
   if (!data) {
     return {
-      title: "", description: "", destination: "", destinationId: "", imageUrl: "",
+      title: "", description: "", destinationId: "", imageUrl: "",
       category: "trek", tag: "", price: "", duration: "",
       maxGroupSize: "20", rating: "5", available: true,
       highlights: "", itinerary: [], images: [],
@@ -78,7 +77,7 @@ function makeInitial(data?: PackageFormProps["initialData"]): PackageFormState {
 
   return {
     title: data.title || "", description: data.description || "",
-    destination: data.destination || "", destinationId: data.destinationId || "",
+    destinationId: data.destinationId || "",
     imageUrl: data.imageUrl || "",
     category: data.category || "trek", tag: data.tag || "",
     price: String(data.price ?? ""), duration: String(data.duration ?? ""),
@@ -166,7 +165,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
     if (!touched.has(key)) return "";
     switch (key) {
       case "title": return form.title.trim() ? "" : "Title is required";
-      case "destination": return form.destination.trim() ? "" : "Destination is required";
+      case "destinationId": return form.destinationId ? "" : "Destination is required";
       case "description": return form.description.trim() ? "" : "Description is required";
       case "price": return parseFloat(form.price) > 0 ? "" : "Price must be > 0";
       case "duration": return parseInt(form.duration) > 0 ? "" : "Duration must be > 0";
@@ -186,7 +185,7 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setTouched(new Set(["title", "destination", "description", "price", "duration"]));
+    setTouched(new Set(["title", "destinationId", "description", "price", "duration"]));
 
     const body = {
       ...form,
@@ -246,34 +245,23 @@ export function PackageForm({ initialData, mode, packageId }: PackageFormProps) 
             {fieldError("title") && <p className="text-xs text-destructive">{fieldError("title")}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="destination">Destination *</Label>
+            <Label htmlFor="destinationId">Destination *</Label>
             <select
-              id="destination"
-              value={form.destinationId || "__custom__"}
+              id="destinationId"
+              value={form.destinationId}
               onChange={(e) => {
-                if (e.target.value === "__custom__") {
-                  set("destinationId", "");
-                  set("destination", "");
-                } else {
-                  const dest = destinations.find((d) => d.id === e.target.value);
-                  if (dest) {
-                    set("destinationId", dest.id);
-                    set("destination", dest.name);
-                  }
-                }
-                touch("destination");
+                set("destinationId", e.target.value);
+                touch("destinationId");
               }}
-              onBlur={() => touch("destination")}
-              className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${inputClass("destination")}`}
+              onBlur={() => touch("destinationId")}
+              className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${inputClass("destinationId")}`}
             >
-              {!destinations.find((d) => d.id === form.destinationId) && form.destination && (
-                <option value="__custom__">{form.destination}</option>
-              )}
+              <option value="">Select destination...</option>
               {destinations.map((d) => (
                 <option key={d.id} value={d.id}>{d.name}</option>
               ))}
             </select>
-            {fieldError("destination") && <p className="text-xs text-destructive">{fieldError("destination")}</p>}
+            {fieldError("destinationId") && <p className="text-xs text-destructive">{fieldError("destinationId")}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>

@@ -22,7 +22,7 @@ interface Booking {
   phone?: string | null;
   specialRequests?: string | null;
   user: { name: string; email: string };
-  package: { title: string; price: number; duration: number; destination: string };
+  package: { title: string; price: number; duration: number; destinationRel: { name: string } | null };
 }
 
 const statusFilters = ["all", "pending", "confirmed", "completed", "cancelled"] as const;
@@ -238,7 +238,7 @@ export default function AdminBookingsPage() {
                 <div>
                   <p className="text-muted-foreground">Package</p>
                   <p className="font-medium">{detailBooking.package.title}</p>
-                  <p className="text-xs text-muted-foreground">{detailBooking.package.destination} · {detailBooking.package.duration} days</p>
+                  <p className="text-xs text-muted-foreground">{detailBooking.package.destinationRel?.name ?? ""} · {detailBooking.package.duration} days</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Travel Date</p>

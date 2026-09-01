@@ -12,7 +12,6 @@ export default async function AdminEditPackagePage({ params }: { params: Promise
   const data = {
     title: pkg.title,
     description: pkg.description,
-    destination: pkg.destination,
     destinationId: pkg.destinationId,
     imageUrl: pkg.imageUrl,
     category: pkg.category,

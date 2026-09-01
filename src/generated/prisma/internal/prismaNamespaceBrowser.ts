@@ -163,7 +163,6 @@ export const PackageScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  destination: 'destination',
   destinationId: 'destinationId',
   price: 'price',
   duration: 'duration',

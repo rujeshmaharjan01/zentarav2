@@ -16,8 +16,8 @@ interface Booking {
   package: {
     id: string;
     title: string;
-    destination: string;
     imageUrl?: string | null;
+    destinationRel: { name: string } | null;
   };
 }
 

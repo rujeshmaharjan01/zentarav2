@@ -34,6 +34,7 @@ export default async function DestinationPage({ params }: PageProps) {
   const packages = await prisma.package.findMany({
     where: { available: true, destinationId: dest.id },
     orderBy: { reviewCount: "desc" },
+    include: { destinationRel: { select: { name: true } } },
   });
 
   const highlights = dest.highlights as string[];
@@ -131,7 +132,7 @@ export default async function DestinationPage({ params }: PageProps) {
                   key={pkg.id}
                   id={pkg.id}
                   title={pkg.title}
-                  destination={pkg.destination}
+                   destination={pkg.destinationRel?.name ?? ""}
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}

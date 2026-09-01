@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
 import Link from "next/link";
-import { MapPin, Globe, Shield, DollarSign, Phone, Search } from "lucide-react";
+import { MapPin, Globe, Shield, DollarSign, Phone } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 import { OrganizationJsonLd } from "@/components/json-ld";
@@ -32,25 +32,46 @@ const features = [
 ];
 
 export default async function HomePage() {
-  let bestSelling: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
-  let shortTreks: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
-  let tours: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
+  let bestSelling: Awaited<
+    ReturnType<
+      typeof prisma.package.findMany<{
+        include: { destinationRel: { select: { name: true } } };
+      }>
+    >
+  > = [];
+  let shortTreks: Awaited<
+    ReturnType<
+      typeof prisma.package.findMany<{
+        include: { destinationRel: { select: { name: true } } };
+      }>
+    >
+  > = [];
+  let tours: Awaited<
+    ReturnType<
+      typeof prisma.package.findMany<{
+        include: { destinationRel: { select: { name: true } } };
+      }>
+    >
+  > = [];
   try {
     [bestSelling, shortTreks, tours] = await Promise.all([
       prisma.package.findMany({
         where: { available: true, category: "trek" },
         orderBy: { reviewCount: "desc" },
         take: 3,
+        include: { destinationRel: { select: { name: true } } },
       }),
       prisma.package.findMany({
         where: { available: true, category: "trek", duration: { lte: 10 } },
         orderBy: { duration: "asc" },
         take: 3,
+        include: { destinationRel: { select: { name: true } } },
       }),
       prisma.package.findMany({
         where: { available: true, category: "tour" },
         orderBy: { createdAt: "desc" },
         take: 3,
+        include: { destinationRel: { select: { name: true } } },
       }),
     ]);
   } catch {
@@ -60,7 +81,10 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <OrganizationJsonLd />
-      <section aria-labelledby="hero-heading" className="relative min-h-[600px] md:min-h-[800px] flex items-center justify-center">
+      <section
+        aria-labelledby="hero-heading"
+        className="relative min-h-150 md:min-h-200 flex items-center justify-center"
+      >
         <video
           autoPlay
           loop
@@ -82,12 +106,15 @@ export default async function HomePage() {
           style={{ height: 800 }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/40" />
-        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/40" />
+        <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-black/60 to-transparent" />
 
         <div className="relative z-10 w-full px-4 text-center">
-          <div className="mx-auto max-w-[780px]">
-            <h1 id="hero-heading" className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-7xl lg:whitespace-nowrap font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]">
+          <div className="mx-auto max-w-195">
+            <h1
+              id="hero-heading"
+              className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-7xl lg:whitespace-nowrap font-bold leading-tight [text-shadow:_0_2px_14px_rgb(0_0_0_/_55%)]"
+            >
               Zentara Travels &amp; Tours
             </h1>
             <p className="mt-4 text-white/80 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium [text-shadow:_0_2px_10px_rgb(0_0_0_/_45%)]">
@@ -106,7 +133,7 @@ export default async function HomePage() {
                     <f.icon className="h-6 w-6 text-[#01aeef]" />
                   </span>
                   <div>
-                    <div className="text-white font-semibold text-sm leading-tight [text-shadow:_0_1px_2px_rgb(0_0_0_/_25%)]">
+                    <div className="text-white font-semibold text-sm leading-tight [text-shadow:0_1px_2px_rgb(0_0_0/25%)]">
                       {f.title}
                     </div>
                     <div className="mt-1 text-xs leading-snug text-white/80">
@@ -121,14 +148,21 @@ export default async function HomePage() {
       </section>
 
       {bestSelling.length > 0 && (
-        <section aria-labelledby="best-selling-heading" className="py-16 md:py-24">
+        <section
+          aria-labelledby="best-selling-heading"
+          className="py-16 md:py-24"
+        >
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 id="best-selling-heading" className="text-3xl md:text-4xl font-bold">
+              <h2
+                id="best-selling-heading"
+                className="text-3xl md:text-4xl font-bold"
+              >
                 Our Best Selling Treks
               </h2>
               <p className="text-muted-foreground">
-                Not sure what to choose. Let us introduce our most popular adventure treks
+                Not sure what to choose. Let us introduce our most popular
+                adventure treks
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -137,7 +171,7 @@ export default async function HomePage() {
                   key={pkg.id}
                   id={pkg.id}
                   title={pkg.title}
-                  destination={pkg.destination}
+                  destination={pkg.destinationRel?.name ?? ""}
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
@@ -149,7 +183,10 @@ export default async function HomePage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <Link href="/packages" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              <Link
+                href="/packages"
+                className={buttonVariants({ variant: "outline", size: "lg" })}
+              >
                 View All Treks
               </Link>
             </div>
@@ -158,10 +195,16 @@ export default async function HomePage() {
       )}
 
       {shortTreks.length > 0 && (
-        <section aria-labelledby="short-treks-heading" className="py-16 md:py-24 bg-muted/50">
+        <section
+          aria-labelledby="short-treks-heading"
+          className="py-16 md:py-24 bg-muted/50"
+        >
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 id="short-treks-heading" className="text-3xl md:text-4xl font-bold">
+              <h2
+                id="short-treks-heading"
+                className="text-3xl md:text-4xl font-bold"
+              >
                 Short yet Stunning Treks
               </h2>
               <p className="text-muted-foreground">
@@ -174,7 +217,7 @@ export default async function HomePage() {
                   key={pkg.id}
                   id={pkg.id}
                   title={pkg.title}
-                  destination={pkg.destination}
+                  destination={pkg.destinationRel?.name ?? ""}
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
@@ -186,7 +229,10 @@ export default async function HomePage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <Link href="/packages?q=short" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              <Link
+                href="/packages?q=short"
+                className={buttonVariants({ variant: "outline", size: "lg" })}
+              >
                 View All Short Treks
               </Link>
             </div>
@@ -198,7 +244,9 @@ export default async function HomePage() {
         <section aria-labelledby="tours-heading" className="py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
-              <h2 id="tours-heading" className="text-3xl md:text-4xl font-bold">Tours</h2>
+              <h2 id="tours-heading" className="text-3xl md:text-4xl font-bold">
+                Tours
+              </h2>
               <p className="text-muted-foreground">
                 Exclusive 1 day and multi-day tours
               </p>
@@ -209,7 +257,7 @@ export default async function HomePage() {
                   key={pkg.id}
                   id={pkg.id}
                   title={pkg.title}
-                  destination={pkg.destination}
+                  destination={pkg.destinationRel?.name ?? ""}
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
@@ -221,7 +269,10 @@ export default async function HomePage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <Link href="/packages?category=tour" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              <Link
+                href="/packages?category=tour"
+                className={buttonVariants({ variant: "outline", size: "lg" })}
+              >
                 View All Tours
               </Link>
             </div>
@@ -229,7 +280,10 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section aria-labelledby="cta-heading" className="py-16 md:py-24 bg-muted/50">
+      <section
+        aria-labelledby="cta-heading"
+        className="py-16 md:py-24 bg-muted/50"
+      >
         <div className="container mx-auto px-4 text-center space-y-6">
           <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold">
             Ready to Start Your Journey?
