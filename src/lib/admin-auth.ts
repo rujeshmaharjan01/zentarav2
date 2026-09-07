@@ -20,22 +20,7 @@ export const PackageSchema = z.object({
   images: z.array(z.string()).optional(),
 });
 
-interface PackageInput {
-  title: string;
-  description: string;
-  destinationId?: string | null;
-  price: number;
-  duration: number;
-  imageUrl?: string | null;
-  category?: string;
-  tag?: string | null;
-  maxGroupSize?: number;
-  rating?: number;
-  available?: boolean;
-  highlights?: unknown;
-  itinerary?: unknown;
-  images?: string[];
-}
+export type PackageInput = z.infer<typeof PackageSchema>;
 
 export function buildPackageData(b: PackageInput) {
   return {
@@ -58,12 +43,22 @@ export async function getSessionUser(headers: Headers) {
 }
 
 export async function requireAdmin(request: Request) {
-  const user = await getSessionUser(request.headers);
-  if (!user) {
-    const session = await auth.api.getSession({ headers: request.headers });
-    const status = session ? 403 : 401;
-    const msg = session ? "Forbidden" : "Unauthorized";
-    return { user: null, error: NextResponse.json({ error: msg }, { status }) };
+  let session;
+  try {
+    session = await auth.api.getSession({ headers: request.headers });
+  } catch {
+    return { user: null, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+  }
+  if (!session) {
+    return { user: null, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+  }
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!user || user.role !== "admin") {
+    return { user: null, error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
   }
   return { user, error: null };
+}
+
+export function isPrismaError(e: unknown, code: string): boolean {
+  return !!e && typeof e === "object" && "code" in e && (e as Record<string, unknown>).code === code;
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, isPrismaError } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -11,7 +11,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     await prisma.review.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
     const msg = e instanceof Error ? e.message : "Failed to delete review";

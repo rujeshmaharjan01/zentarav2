@@ -16,7 +16,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check, Minus, Plus, CalendarIcon, ChevronLeft, ChevronRight, MapPin, Users, CreditCard, Shield, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 interface BookingFormProps {
   packageId: string;
@@ -71,7 +70,7 @@ export function BookingForm({ packageId, packageName, packageDestination, price,
   useEffect(() => {
     if (!date) { setAvailability(null); return; }
     setAvailLoading(true);
-    const dateStr = format(date, "yyyy-MM-dd");
+    const dateStr = date.toISOString().slice(0, 10);
     fetch(`/api/packages/${packageId}/availability?date=${dateStr}`)
       .then((r) => r.json())
       .then((data: Availability) => setAvailability(data))
@@ -174,7 +173,7 @@ export function BookingForm({ packageId, packageName, packageDestination, price,
                       <button type="button" className="flex h-11 w-full items-center justify-between rounded-lg border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                     }
                   >
-                    {date ? format(date, "PPP") : <span className="text-muted-foreground">Pick a date</span>}
+                    {date ? new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(date) : <span className="text-muted-foreground">Pick a date</span>}
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -281,7 +280,7 @@ export function BookingForm({ packageId, packageName, packageDestination, price,
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <p className="text-muted-foreground">Date</p>
-                      <p className="font-medium">{date ? format(date, "PPP") : "—"}</p>
+                      <p className="font-medium">{date ? new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(date) : "—"}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Guests</p>

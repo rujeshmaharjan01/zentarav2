@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, buildPackageData, PackageSchema } from "@/lib/admin-auth";
+import { requireAdmin, buildPackageData, PackageSchema, isPrismaError } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const pkg = await prisma.package.update({ where: { id }, data: { available: parsed.data.available } });
     return NextResponse.json({ id: pkg.id, available: pkg.available });
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "Package not found" }, { status: 404 });
     }
     const msg = e instanceof Error ? e.message : "Failed to update package";
@@ -43,7 +43,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const pkg = await prisma.package.update({ where: { id }, data: buildPackageData(parsed.data) });
     return NextResponse.json(pkg);
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "Package not found" }, { status: 404 });
     }
     const msg = e instanceof Error ? e.message : "Failed to update package";

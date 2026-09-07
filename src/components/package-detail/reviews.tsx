@@ -81,8 +81,7 @@ export function Reviews({ packageId, isLoggedIn }: ReviewsProps) {
         </div>
       </div>
 
-      {isLoggedIn && (
-        <form onSubmit={handleSubmit} className="space-y-3 p-4 rounded-lg border">
+      <form onSubmit={handleSubmit} className="space-y-3 p-4 rounded-lg border">
           <div className="space-y-2">
             <label className="text-sm font-medium">Your Rating</label>
             <div className="flex gap-1">
@@ -102,12 +101,11 @@ export function Reviews({ packageId, isLoggedIn }: ReviewsProps) {
               placeholder="Share your experience..."
             />
           </div>
-          <Button type="submit" size="sm" disabled={submitting}>
+          <Button type="submit" size="sm" disabled={submitting || !isLoggedIn}>
             {submitting && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-            Submit Review
+            {isLoggedIn ? "Submit Review" : "Sign in to review"}
           </Button>
         </form>
-      )}
 
       {loading ? (
         <div className="space-y-3">

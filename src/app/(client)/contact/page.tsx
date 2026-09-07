@@ -1,38 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ContactForm } from "@/components/contact-form";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import { toast } from "sonner";
 
 export default function ContactPage() {
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
-
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    setLoading(false);
-    if (res.ok) {
-      toast.success("Message sent! We'll get back to you soon.");
-      form.reset();
-    } else {
-      toast.error("Failed to send. Please try again.");
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <section className="bg-gradient-to-b from-primary/5 to-background py-16">
@@ -53,25 +25,7 @@ export default function ContactPage() {
                 <CardDescription>We typically respond within 24 hours.</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" name="name" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" name="email" type="email" required />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" name="message" rows={5} required minLength={10} />
-                  </div>
-                  <Button type="submit" disabled={loading}>
-                    {loading ? "Sending..." : "Send Message"}
-                  </Button>
-                </form>
+                <ContactForm className="space-y-4" />
               </CardContent>
             </Card>
           </div>

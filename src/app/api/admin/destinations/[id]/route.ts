@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, isPrismaError } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -50,10 +50,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const destination = await prisma.destination.update({ where: { id }, data: parsed.data });
     return NextResponse.json(destination);
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "Destination not found" }, { status: 404 });
     }
-    if (e && typeof e === "object" && "code" in e && e.code === "P2002") {
+    if (isPrismaError(e, "P2002")) {
       return NextResponse.json({ error: "A destination with this slug already exists" }, { status: 409 });
     }
     const msg = e instanceof Error ? e.message : "Failed to update destination";
@@ -74,7 +74,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     await prisma.destination.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "Destination not found" }, { status: 404 });
     }
     const msg = e instanceof Error ? e.message : "Failed to delete destination";

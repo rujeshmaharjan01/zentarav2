@@ -5,6 +5,7 @@ import { MapPin, Globe, Shield, DollarSign, Phone } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 import { OrganizationJsonLd } from "@/components/json-ld";
+import { ContactForm } from "@/components/contact-form";
 import Image from "next/image";
 
 export const revalidate = 60;
@@ -264,6 +265,16 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <section aria-labelledby="contact-heading" className="py-16 md:py-24 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <h2 id="contact-heading" className="text-3xl md:text-4xl font-bold text-center">Contact Us</h2>
+            <p className="text-muted-foreground text-center">Have a question? We&apos;re here to help plan your adventure.</p>
+            <ContactForm className="space-y-4" />
+          </div>
+        </div>
+      </section>
 
       <section
         aria-labelledby="cta-heading"

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, isPrismaError } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -42,7 +42,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const user = await prisma.user.update({ where: { id }, data: { role: parsed.data.role } });
     return NextResponse.json({ id: user.id, role: user.role });
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2025") {
+    if (isPrismaError(e, "P2025")) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     const msg = e instanceof Error ? e.message : "Failed to update user";
