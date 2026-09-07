@@ -22,6 +22,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [signedUp, setSignedUp] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState("");
 
   const isSignUp = mode === "sign-up";
 
@@ -37,6 +39,10 @@ export function AuthForm({ mode }: AuthFormProps) {
     if (authError) {
       setError(authError.message || (isSignUp ? "Failed to create account" : "Invalid credentials"));
       setLoading(false);
+    } else if (isSignUp) {
+      setVerifyEmail(email);
+      setSignedUp(true);
+      setLoading(false);
     } else {
       router.push("/dashboard");
     }
@@ -45,54 +51,75 @@ export function AuthForm({ mode }: AuthFormProps) {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">{isSignUp ? "Create Account" : "Welcome Back"}</CardTitle>
-        <CardDescription>{isSignUp ? "Join Zentara Travels today" : "Sign in to your account"}</CardDescription>
+        <CardTitle className="text-2xl">
+          {signedUp ? "Check Your Email" : isSignUp ? "Create Account" : "Welcome Back"}
+        </CardTitle>
+        <CardDescription>
+          {signedUp
+            ? `We sent a verification link to ${verifyEmail}`
+            : isSignUp ? "Join Zentara Travels today" : "Sign in to your account"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button variant="outline" className="w-full" onClick={() => authClient.signIn.social({ provider: "github" })}>
-          Continue with GitHub
-        </Button>
+        {signedUp ? (
+          <div className="space-y-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Click the link in the email to verify your account. Once verified, you can sign in.
+            </p>
+            <Button variant="outline" onClick={() => router.push("/sign-in")}>
+              Go to Sign In
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Button variant="outline" className="w-full" onClick={() => authClient.signIn.social({ provider: "github" })}>
+              Continue with GitHub
+            </Button>
 
-        <div className="relative">
-          <div className="h-px w-full bg-border" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">or</span>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {isSignUp && (
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} required />
+            <div className="relative">
+              <div className="h-px w-full bg-border" />
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">or</span>
             </div>
-          )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder={isSignUp ? "At least 8 characters" : undefined} value={password} onChange={(e) => setPassword(e.target.value)} minLength={isSignUp ? 8 : undefined} required />
-          </div>
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <Spinner className="mr-2" />}
-            {isSignUp ? "Create Account" : "Sign In"}
-          </Button>
-        </form>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {isSignUp && (
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} required />
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" placeholder={isSignUp ? "At least 8 characters" : undefined} value={password} onChange={(e) => setPassword(e.target.value)} minLength={isSignUp ? 8 : undefined} required />
+              </div>
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading && <Spinner className="mr-2" />}
+                {isSignUp ? "Create Account" : "Sign In"}
+              </Button>
+            </form>
+          </>
+        )}
       </CardContent>
-      <CardFooter className="justify-center">
-        <p className="text-sm text-muted-foreground">
-          {isSignUp ? (
-            <>Already have an account? <Link href="/sign-in" className="text-primary hover:underline">Sign in</Link></>
-          ) : (
-            <>Don&apos;t have an account? <Link href="/sign-up" className="text-primary hover:underline">Sign up</Link></>
-          )}
-        </p>
-      </CardFooter>
+      {!signedUp && (
+        <CardFooter className="justify-center">
+          <p className="text-sm text-muted-foreground">
+            {isSignUp ? (
+              <>Already have an account? <Link href="/sign-in" className="text-primary hover:underline">Sign in</Link></>
+            ) : (
+              <>Don&apos;t have an account? <Link href="/sign-up" className="text-primary hover:underline">Sign up</Link></>
+            )}
+          </p>
+        </CardFooter>
+      )}
     </Card>
   );
 }
