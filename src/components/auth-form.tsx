@@ -10,6 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+
+
 
 interface AuthFormProps {
   mode: "sign-in" | "sign-up";
@@ -73,7 +77,17 @@ export function AuthForm({ mode }: AuthFormProps) {
         ) : (
           <>
             <Button variant="outline" className="w-full" onClick={() => authClient.signIn.social({ provider: "github" })}>
+              <FaGithub size={5} />
+
+              
               Continue with GitHub
+            </Button>
+
+            <Button variant="outline" className="w-full" onClick={() => authClient.signIn.social({ provider: "google" })}>
+              <FcGoogle size={5} />
+
+              
+              Continue with Google
             </Button>
 
             <div className="relative">
