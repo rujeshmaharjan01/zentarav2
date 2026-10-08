@@ -6,9 +6,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { adminLinks } from "@/lib/admin-links";
+import { LayoutDashboard, Package, CalendarDays, Users, Star, MapPin } from "lucide-react";
 import LogoImage from "@/components/logo";
 import { usePathname } from "next/navigation";
+
+const adminLinks = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/packages", label: "Packages", icon: Package },
+  { href: "/admin/destinations", label: "Destinations", icon: MapPin },
+  { href: "/admin/bookings", label: "Bookings", icon: CalendarDays },
+  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
+];
 
 function AdminSidebarNav() {
   const pathname = usePathname();

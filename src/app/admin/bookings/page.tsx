@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Check, X, Loader2, Search, CheckCircle, Download, Eye } from "lucide-react";
+import { exportCsv as exportCsvFile } from "@/lib/csv";
+import { bookingStatusVariant, bookingStatusLabel } from "@/lib/booking-status";
 
 interface Booking {
   id: string;
@@ -28,13 +30,6 @@ interface Booking {
 
 const statusFilters = ["all", "pending", "confirmed", "completed", "cancelled"] as const;
 type StatusFilter = (typeof statusFilters)[number];
-
-const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  pending: { label: "Pending", variant: "secondary" },
-  confirmed: { label: "Confirmed", variant: "default" },
-  completed: { label: "Completed", variant: "outline" },
-  cancelled: { label: "Cancelled", variant: "destructive" },
-};
 
 const statusTimeline = ["pending", "confirmed", "completed"];
 
@@ -104,12 +99,7 @@ export default function AdminBookingsPage() {
       new Date(b.createdAt).toLocaleDateString(),
       String(b.guests), `$${b.totalPrice}`, b.status,
     ]);
-    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "bookings.csv"; a.click();
-    URL.revokeObjectURL(url);
+    exportCsvFile(headers, rows, "bookings.csv");
   }
 
   return (
@@ -181,8 +171,8 @@ export default function AdminBookingsPage() {
                       <TableCell>{b.guests}</TableCell>
                       <TableCell>${b.totalPrice}</TableCell>
                       <TableCell>
-                        <Badge variant={statusConfig[b.status]?.variant || "secondary"}>
-                          {statusConfig[b.status]?.label || b.status}
+                        <Badge variant={bookingStatusVariant(b.status)}>
+                          {bookingStatusLabel(b.status)}
                         </Badge>
                       </TableCell>
                       <TableCell>

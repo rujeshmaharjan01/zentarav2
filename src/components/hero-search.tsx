@@ -65,7 +65,7 @@ export function HeroSearch() {
           <button
             key={tag}
             onClick={() => handleTagClick(tag)}
-            className="rounded-full bg-white/10 px-3 py-2 text-sm text-white/80 ring-1 ring-white/15 transition hover:bg-white/20 hover:text-white min-h-[44px] flex items-center"
+            className="rounded-full bg-white/15 px-3 py-2 text-sm text-white/80 transition hover:bg-white/25 hover:text-white min-h-[44px] flex items-center"
           >
             {tag}
           </button>

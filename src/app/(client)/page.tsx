@@ -1,61 +1,55 @@
 import { prisma } from "@/lib/prisma";
 import { PackageCard } from "@/components/package-card";
+import { DestinationCard } from "@/components/destination/destination-card";
+import { Stars } from "@/components/ui/stars";
 import Link from "next/link";
-import { MapPin, Globe, Shield, DollarSign, Phone } from "lucide-react";
+import { Users, Clock, Award, Headphones } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroSearch } from "@/components/hero-search";
 import { OrganizationJsonLd } from "@/components/json-ld";
-import { ContactForm } from "@/components/contact-form";
 import Image from "next/image";
+import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-const features = [
-  {
-    icon: Globe,
-    title: "50+ Destinations",
-    desc: "Explore handpicked destinations across all continents",
+export const metadata: Metadata = {
+  title: "Zentara Travels - Nepal Tours & Trekking",
+  description: "Expert-guided treks and tours in Nepal. Everest Base Camp, Annapurna Circuit, Chitwan Safari. Book your Himalayan adventure.",
+  openGraph: {
+    title: "Zentara Travels - Nepal Tours & Trekking",
+    description: "Expert-guided treks and tours in Nepal. Everest Base Camp, Annapurna Circuit, Chitwan Safari.",
   },
-  {
-    icon: Shield,
-    title: "Safe & Secure",
-    desc: "Travel with confidence knowing you're covered",
-  },
-  {
-    icon: DollarSign,
-    title: "Best Price Guarantee",
-    desc: "Found a lower price elsewhere? We will match it!",
-  },
-  {
-    icon: Phone,
-    title: "24/7 Support",
-    desc: "Get local support 24/7 during your trip",
-  },
-];
+};
 
 export default async function HomePage() {
   let bestSelling: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
-  let shortTreks: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
   let tours: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { destinationRel: { select: { name: true } } } }>>> = [];
+  let destinations: (Awaited<ReturnType<typeof prisma.destination.findMany>>[number] & { _count: { packages: number } })[] = [];
+  let reviews: Awaited<ReturnType<typeof prisma.review.findMany<{ include: { user: { select: { name: true } }; package: { select: { title: true } } } }>>> = [];
   try {
-    [bestSelling, shortTreks, tours] = await Promise.all([
+    [bestSelling, tours, destinations, reviews] = await Promise.all([
       prisma.package.findMany({
         where: { available: true, category: "trek" },
         orderBy: { reviewCount: "desc" },
-        take: 3,
-        include: { destinationRel: { select: { name: true } } },
-      }),
-      prisma.package.findMany({
-        where: { available: true, category: "trek", duration: { lte: 10 } },
-        orderBy: { duration: "asc" },
-        take: 3,
+        take: 4,
         include: { destinationRel: { select: { name: true } } },
       }),
       prisma.package.findMany({
         where: { available: true, category: "tour" },
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 4,
         include: { destinationRel: { select: { name: true } } },
+      }),
+      prisma.destination.findMany({
+        where: { featured: true },
+        orderBy: { order: "asc" },
+        take: 3,
+        include: { _count: { select: { packages: { where: { available: true } } } } },
+      }),
+      prisma.review.findMany({
+        take: 4,
+        orderBy: { createdAt: "desc" },
+        include: { user: { select: { name: true } }, package: { select: { title: true } } },
       }),
     ]);
   } catch {
@@ -65,18 +59,19 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <OrganizationJsonLd />
+
+      {/* Hero */}
       <section
         aria-labelledby="hero-heading"
-        className="relative min-h-150 md:min-h-200 flex items-center justify-center"
+        className="relative min-h-dvh flex items-center justify-center overflow-hidden"
       >
         <video
           autoPlay
           loop
           muted
           playsInline
-          poster="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=1260&h=750&dpr=1"
-          className="absolute inset-0 w-full object-cover hidden md:block"
-          style={{ height: 800 }}
+          poster="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=600&h=400&dpr=1"
+          className="absolute inset-0 w-full h-full object-cover hidden md:block"
         >
           <source
             src="https://videos.pexels.com/video-files/35850446/15202819_1920_1080_30fps.mp4"
@@ -84,12 +79,12 @@ export default async function HomePage() {
           />
         </video>
         <Image
-          src="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=1260&h=750&dpr=1"
+          src="https://images.pexels.com/videos/35850446/pexels-photo-35850446.jpeg?auto=compress&w=600&h=400&dpr=1"
           alt="Himalayan sunset panorama"
           fill
           priority
-          sizes="(max-width: 768px) 100vw"
-          className="absolute inset-0 w-full object-cover md:hidden"
+          sizes="100vw"
+          className="absolute inset-0 w-full h-full object-cover md:hidden"
         />
 
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/40" />
@@ -108,31 +103,52 @@ export default async function HomePage() {
             </p>
 
             <HeroSearch />
-
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {features.map((f) => (
-                <div
-                  key={f.title}
-                  className="group flex items-start gap-3 p-3 text-left transition duration-200 hover:-translate-y-0.5"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15">
-                    <f.icon className="h-6 w-6 text-[#01aeef]" />
-                  </span>
-                  <div>
-                    <div className="text-white font-semibold text-sm leading-tight [text-shadow:0_1px_2px_rgb(0_0_0/25%)]">
-                      {f.title}
-                    </div>
-                    <div className="mt-1 text-xs leading-snug text-white/80">
-                      {f.desc}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+          <svg className="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </section>
 
+      {/* Destinations */}
+      {destinations.length > 0 && (
+        <section
+          aria-labelledby="destinations-heading"
+          className="py-16 md:py-24 bg-muted/50"
+        >
+          <div className="container mx-auto px-4">
+            <div className="mb-8 space-y-2">
+              <h2
+                id="destinations-heading"
+                className="text-3xl md:text-4xl font-bold"
+              >
+                Popular Destinations
+              </h2>
+              <p className="text-muted-foreground">
+                Explore the breathtaking landscapes and rich cultures of Asia
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {destinations.map((dest) => (
+                <DestinationCard
+                  key={dest.id}
+                  slug={dest.slug}
+                  name={dest.name}
+                  description={dest.description}
+                  image={dest.image}
+                  featured={dest.featured}
+                  packageCount={dest._count.packages}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Best Selling Treks */}
       {bestSelling.length > 0 && (
         <section
           aria-labelledby="best-selling-heading"
@@ -147,11 +163,11 @@ export default async function HomePage() {
                 Our Best Selling Treks
               </h2>
               <p className="text-muted-foreground">
-                Not sure what to choose. Let us introduce our most popular
+                Not sure what to choose? Let us introduce our most popular
                 adventure treks
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {bestSelling.map((pkg) => (
                 <PackageCard
                   key={pkg.id}
@@ -161,10 +177,11 @@ export default async function HomePage() {
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
-                  maxGroupSize={pkg.maxGroupSize}
+                  category={pkg.category}
                   tag={pkg.tag}
                   rating={pkg.rating}
                   reviewCount={pkg.reviewCount}
+                  highlights={(pkg.highlights as string[]) ?? []}
                 />
               ))}
             </div>
@@ -180,54 +197,9 @@ export default async function HomePage() {
         </section>
       )}
 
-      {shortTreks.length > 0 && (
-        <section
-          aria-labelledby="short-treks-heading"
-          className="py-16 md:py-24 bg-muted/50"
-        >
-          <div className="container mx-auto px-4">
-            <div className="mb-8 space-y-2">
-              <h2
-                id="short-treks-heading"
-                className="text-3xl md:text-4xl font-bold"
-              >
-                Short yet Stunning Treks
-              </h2>
-              <p className="text-muted-foreground">
-                Limited time? Check our curated 2 to 10 day treks
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {shortTreks.map((pkg) => (
-                <PackageCard
-                  key={pkg.id}
-                  id={pkg.id}
-                  title={pkg.title}
-                  destination={pkg.destinationRel?.name ?? ""}
-                  price={pkg.price}
-                  duration={pkg.duration}
-                  imageUrl={pkg.imageUrl}
-                  maxGroupSize={pkg.maxGroupSize}
-                  tag={pkg.tag}
-                  rating={pkg.rating}
-                  reviewCount={pkg.reviewCount}
-                />
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Link
-                href="/packages?q=short"
-                className={buttonVariants({ variant: "outline", size: "lg" })}
-              >
-                View All Short Treks
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
+      {/* Tours */}
       {tours.length > 0 && (
-        <section aria-labelledby="tours-heading" className="py-16 md:py-24">
+        <section aria-labelledby="tours-heading" className="py-16 md:py-24 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="mb-8 space-y-2">
               <h2 id="tours-heading" className="text-3xl md:text-4xl font-bold">
@@ -237,7 +209,7 @@ export default async function HomePage() {
                 Exclusive 1 day and multi-day tours
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {tours.map((pkg) => (
                 <PackageCard
                   key={pkg.id}
@@ -247,10 +219,11 @@ export default async function HomePage() {
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
-                  maxGroupSize={pkg.maxGroupSize}
+                  category={pkg.category}
                   tag={pkg.tag}
                   rating={pkg.rating}
                   reviewCount={pkg.reviewCount}
+                  highlights={(pkg.highlights as string[]) ?? []}
                 />
               ))}
             </div>
@@ -266,30 +239,119 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section aria-labelledby="contact-heading" className="py-16 md:py-24 bg-muted/50">
+      {/* Why Choose Us */}
+      <section aria-labelledby="why-heading" className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto space-y-4">
-            <h2 id="contact-heading" className="text-3xl md:text-4xl font-bold text-center">Contact Us</h2>
-            <p className="text-muted-foreground text-center">Have a question? We&apos;re here to help plan your adventure.</p>
-            <ContactForm className="space-y-4" />
+          <div className="mb-8 space-y-2">
+            <h2 id="why-heading" className="text-3xl md:text-4xl font-bold">
+              Why Choose Us
+            </h2>
+            <p className="text-muted-foreground">
+              We make your Himalayan adventure seamless from start to finish
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Expert Local Guides</h3>
+              <p className="text-sm text-muted-foreground">
+                Certified guides who know every trail and cultural story
+              </p>
+            </div>
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Clock className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Flexible Booking</h3>
+              <p className="text-sm text-muted-foreground">
+                Free cancellation up to 30 days before your trip
+              </p>
+            </div>
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Headphones className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">24/7 Support</h3>
+              <p className="text-sm text-muted-foreground">
+                Local support team available around the clock during your trip
+              </p>
+            </div>
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Award className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Best Price Guarantee</h3>
+              <p className="text-sm text-muted-foreground">
+                Found a lower price? We will match it, no questions asked
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section
+          aria-labelledby="reviews-heading"
+          className="py-16 md:py-24 bg-muted/50"
+        >
+          <div className="container mx-auto px-4">
+            <div className="mb-8 space-y-2">
+              <h2
+                id="reviews-heading"
+                className="text-3xl md:text-4xl font-bold"
+              >
+                What Travelers Say
+              </h2>
+              <p className="text-muted-foreground">
+                Real experiences from real adventurers
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="rounded-lg border-l-4 border-primary bg-card p-5 space-y-3"
+                >
+                  <Stars rating={review.rating} />
+                  <p className="text-sm text-muted-foreground line-clamp-4 italic">
+                    &ldquo;{review.comment}&rdquo;
+                  </p>
+                  <div className="pt-2 border-t flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-medium">
+                      {(review.user?.name ?? "T").charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{review.user?.name ?? "Traveler"}</p>
+                      <p className="text-xs text-muted-foreground">{review.package?.title}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA */}
       <section
         aria-labelledby="cta-heading"
-        className="py-16 md:py-24 bg-muted/50"
+        className="py-16 md:py-24 bg-primary text-primary-foreground"
       >
         <div className="container mx-auto px-4 text-center space-y-6">
           <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold">
             Ready to Start Your Journey?
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="opacity-80 max-w-xl mx-auto">
             Join thousands of happy travelers who have discovered their dream
             destinations with us.
           </p>
-          <Link href="/packages" className={buttonVariants({ size: "lg" })}>
-            <MapPin className="mr-2 h-5 w-5" />
+          <Link
+            href="/packages"
+            className={buttonVariants({ size: "lg", variant: "secondary" })}
+          >
             Explore Destinations
           </Link>
         </div>

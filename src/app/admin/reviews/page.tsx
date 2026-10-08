@@ -6,7 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2, Trash2, Star } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import { Stars } from "@/components/ui/stars";
 
 interface Review {
   id: string;
@@ -84,11 +85,7 @@ export default function AdminReviewsPage() {
                       </TableCell>
                       <TableCell className="max-w-[150px] truncate">{r.package.title}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />
-                          ))}
-                        </div>
+                        <Stars rating={r.rating} />
                       </TableCell>
                       <TableCell className="max-w-[200px]">
                         <p className="text-sm truncate">{r.comment || "—"}</p>

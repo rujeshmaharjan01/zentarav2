@@ -1,9 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Clock, Users, ArrowRight, Star } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Star } from "lucide-react";
 
 interface PackageCardProps {
   id: string;
@@ -12,64 +10,101 @@ interface PackageCardProps {
   price: number;
   duration: number;
   imageUrl?: string | null;
-  maxGroupSize: number;
+  category?: string;
   tag?: string | null;
   rating?: number;
   reviewCount?: number;
+  highlights?: string[];
 }
 
-export function PackageCard({ id, title, destination, price, duration, imageUrl, maxGroupSize, tag, rating, reviewCount }: PackageCardProps) {
+export function PackageCard({ id, title, destination, price, duration, imageUrl, category, tag, rating, reviewCount, highlights }: PackageCardProps) {
+  const topHighlights = highlights?.slice(0, 3);
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <div className="relative aspect-video bg-muted">
-        {imageUrl ? (
-          <Image src={imageUrl} alt={title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            No image
+    <Card className="ring-0 bg-transparent py-0 rounded-xl overflow-hidden">
+      <Link
+        href={`/packages/${id}`}
+        className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        aria-label={`View ${title} — ${destination}`}
+      >
+        {/* Image */}
+        <div className="relative aspect-[3/2] sm:aspect-[4/3] xl:aspect-[3/2] overflow-hidden rounded-xl bg-muted">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+              No image
+            </div>
+          )}
+        </div>
+
+        {/* Content */}
+        <CardContent className="p-0 mt-3">
+          <div className="flex justify-between items-start gap-2">
+            <div className="min-w-0">
+              <CardTitle className="text-sm xl:text-base leading-snug line-clamp-1">
+                {title}
+              </CardTitle>
+              <CardDescription className="mt-0.5 flex items-center gap-1.5 line-clamp-1 text-xs xl:text-sm">
+                {destination}
+                {category && (
+                  <span className="shrink-0 text-xs bg-muted px-1.5 py-0.5 rounded-md capitalize">
+                    {category}
+                  </span>
+                )}
+              </CardDescription>
+            </div>
+            {rating !== undefined && reviewCount !== undefined && reviewCount > 0 && (
+              <div className="flex items-center gap-1 shrink-0 text-xs xl:text-sm">
+                <Star className="h-3 w-3 xl:h-3.5 xl:w-3.5 fill-amber-400 text-amber-400" />
+                <span className="font-medium">{rating}</span>
+                <span className="text-muted-foreground">({reviewCount})</span>
+              </div>
+            )}
           </div>
-        )}
-        {tag && (
-          <Badge className="absolute top-2 left-2" variant="secondary">
-            {tag}
-          </Badge>
-        )}
-        <Badge className="absolute top-2 right-2">${price}</Badge>
+
+          {/* Highlights */}
+          {topHighlights && topHighlights.length > 0 && (
+            <p className="mt-1.5 text-xs text-muted-foreground line-clamp-1">
+              {topHighlights.join(" · ")}
+            </p>
+          )}
+
+          {/* Price */}
+          <div className="mt-2 flex items-baseline justify-between">
+            <p className="text-sm xl:text-base">
+              <span className="font-bold text-base xl:text-lg">${price.toLocaleString()}</span>
+              <span className="text-muted-foreground font-normal text-xs xl:text-sm"> / person</span>
+            </p>
+            <p className="text-xs xl:text-sm text-muted-foreground">{duration} {duration === 1 ? "day" : "days"}</p>
+          </div>
+        </CardContent>
+      </Link>
+    </Card>
+  );
+}
+
+export function PackageCardSkeleton() {
+  return (
+    <Card className="ring-0 bg-transparent py-0 rounded-xl overflow-hidden">
+      <div className="animate-pulse">
+        <div className="aspect-[3/2] sm:aspect-[4/3] xl:aspect-[3/2] rounded-xl bg-muted" />
+        <CardContent className="p-0 mt-3 space-y-2">
+          <div className="h-3.5 xl:h-4 bg-muted rounded w-3/4" />
+          <div className="h-2.5 xl:h-3 bg-muted rounded w-1/2" />
+          <div className="h-2.5 xl:h-3 bg-muted rounded w-2/3 mt-1.5" />
+          <div className="flex justify-between items-baseline mt-2">
+            <div className="h-4 xl:h-5 bg-muted rounded w-1/4" />
+            <div className="h-2.5 xl:h-3 bg-muted rounded w-1/6" />
+          </div>
+        </CardContent>
       </div>
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <Link href={`/packages/${id}`} className="block">
-            <h3 className="font-semibold text-lg line-clamp-1 hover:text-primary transition-colors cursor-pointer">
-              {title}
-            </h3>
-          </Link>
-          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-            <MapPin className="h-3.5 w-3.5" />
-            {destination}
-          </div>
-        </div>
-        {rating !== undefined && reviewCount !== undefined && (
-          <div className="flex items-center gap-1 text-sm">
-            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-            <span className="font-medium">{rating}</span>
-            <span className="text-muted-foreground">· {reviewCount} reviews</span>
-          </div>
-        )}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
-            {duration} days
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" />
-            Max {maxGroupSize}
-          </div>
-        </div>
-        <Link href={`/packages/${id}`} className={buttonVariants({ className: "w-full" })}>
-          View Details
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Link>
-      </CardContent>
     </Card>
   );
 }

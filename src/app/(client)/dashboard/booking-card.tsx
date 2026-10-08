@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ReviewDialog } from "./review-dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { bookingStatusVariant, bookingStatusLabel } from "@/lib/booking-status";
 
 interface Booking {
   id: string;
@@ -36,13 +37,6 @@ interface BookingCardProps {
   onCancelled: () => void;
   onReviewSubmitted: () => void;
 }
-
-const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  pending: "secondary",
-  confirmed: "default",
-  completed: "outline",
-  cancelled: "destructive",
-};
 
 export function BookingCard({ booking, onCancelled, onReviewSubmitted }: BookingCardProps) {
   const [cancelling, setCancelling] = useState(false);
@@ -82,8 +76,8 @@ export function BookingCard({ booking, onCancelled, onReviewSubmitted }: Booking
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-lg leading-tight">{booking.package.title}</CardTitle>
-          <Badge variant={statusColors[booking.status] || "secondary"}>
-            {booking.status}
+          <Badge variant={bookingStatusVariant(booking.status)}>
+            {bookingStatusLabel(booking.status)}
           </Badge>
         </div>
       </CardHeader>

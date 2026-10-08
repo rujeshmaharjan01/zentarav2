@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Stars } from "@/components/ui/stars";
 import { Star, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -72,11 +73,7 @@ export function Reviews({ packageId, isLoggedIn }: ReviewsProps) {
       <div className="flex items-center gap-4">
         <div className="text-center">
           <div className="text-3xl font-bold">{avgRating.toFixed(1)}</div>
-          <div className="flex gap-0.5 justify-center mt-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-            ))}
-          </div>
+          <Stars rating={Math.round(avgRating)} className="justify-center mt-1" />
           <div className="text-xs text-muted-foreground mt-1">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</div>
         </div>
       </div>
@@ -125,11 +122,7 @@ export function Reviews({ packageId, isLoggedIn }: ReviewsProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-medium text-sm">{review.user.name}</span>
-                  <div className="flex gap-0.5 mt-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`h-3 w-3 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
-                    ))}
-                  </div>
+                  <Stars rating={review.rating} className="mt-0.5" />
                 </div>
                 <span className="text-xs text-muted-foreground">
                   {new Date(review.createdAt).toLocaleDateString()}

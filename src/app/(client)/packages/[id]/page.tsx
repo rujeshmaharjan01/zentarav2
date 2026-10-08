@@ -47,11 +47,12 @@ export async function generateMetadata({
     },
   });
   if (!pkg) return {};
+  const title = `${pkg.title.slice(0, 50)} - Zentara Travels`;
   return {
-    title: `${pkg.title} - Zentara Travels`,
+    title,
     description: pkg.description.slice(0, 160),
     openGraph: {
-      title: `${pkg.title} - Zentara Travels`,
+      title,
       description: pkg.description.slice(0, 160),
       images: pkg.imageUrl ? [pkg.imageUrl] : [],
     },
@@ -94,7 +95,7 @@ export default async function PackageDetailPage({
         price={pkg.price}
         duration={`${pkg.duration}`}
       />
-      <SectionNav />
+      <SectionNav hasItinerary={itinerary.length > 0} />
 
       <div className="container mx-auto px-4 py-8 pb-24 lg:pb-8">
         {/* Breadcrumbs */}
@@ -196,21 +197,23 @@ export default async function PackageDetailPage({
             )}
 
             {/* Itinerary */}
-            {itinerary.length > 0 && (
-              <section
-                id="itinerary"
-                aria-labelledby="itinerary-heading"
-                className="scroll-mt-28"
+            <section
+              id="itinerary"
+              aria-labelledby="itinerary-heading"
+              className="scroll-mt-28"
+            >
+              <h2
+                id="itinerary-heading"
+                className="text-xl font-semibold mb-4"
               >
-                <h2
-                  id="itinerary-heading"
-                  className="text-xl font-semibold mb-4"
-                >
-                  Itinerary
-                </h2>
+                Itinerary
+              </h2>
+              {itinerary.length > 0 ? (
                 <Itinerary itinerary={itinerary} />
-              </section>
-            )}
+              ) : (
+                <p className="text-sm text-muted-foreground">Detailed day-by-day itinerary will be provided after booking.</p>
+              )}
+            </section>
 
             {/* Includes / Excludes */}
             <section

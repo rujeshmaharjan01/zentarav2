@@ -9,16 +9,17 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Travel Packages - Zentara Travels",
-  description:
-    "Browse our curated collection of Nepal treks, tours, and adventure packages. Find your perfect Himalayan getaway.",
-  openGraph: {
-    title: "Travel Packages - Zentara Travels",
-    description:
-      "Browse our curated collection of Nepal treks, tours, and adventure packages.",
-  },
-};
+type SearchParams = Promise<{ q?: string; category?: string; minPrice?: string; maxPrice?: string }>;
+
+export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+  const { q, category } = await searchParams;
+  if (q) return { title: `Search "${q}" - Zentara Travels`, description: `Results for "${q}" in Nepal treks and tours.` };
+  if (category && category !== "all") {
+    const label = category.charAt(0).toUpperCase() + category.slice(1);
+    return { title: `${label} Packages - Zentara Travels`, description: `Browse our Nepal ${category} packages and tours.` };
+  }
+  return { title: "Travel Packages - Zentara Travels", description: "Browse Nepal treks, tours, and adventure packages. Find your perfect Himalayan getaway." };
+}
 
 export default async function PackagesPage({
   searchParams,
@@ -98,7 +99,7 @@ export default async function PackagesPage({
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           {packages.map((pkg) => (
             <PackageCard
               key={pkg.id}
@@ -108,10 +109,11 @@ export default async function PackagesPage({
               price={pkg.price}
               duration={pkg.duration}
               imageUrl={pkg.imageUrl}
-              maxGroupSize={pkg.maxGroupSize}
+              category={pkg.category}
               tag={pkg.tag}
               rating={pkg.rating}
               reviewCount={pkg.reviewCount}
+              highlights={(pkg.highlights as string[]) ?? []}
             />
           ))}
         </div>

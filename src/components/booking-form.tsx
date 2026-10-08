@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Check, Minus, Plus, CalendarIcon, ChevronLeft, ChevronRight, MapPin, Users, CreditCard, Shield, Clock } from "lucide-react";
+import { Check, Minus, Plus, CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 interface BookingFormProps {

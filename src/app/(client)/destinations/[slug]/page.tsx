@@ -15,12 +15,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const dest = await prisma.destination.findUnique({ where: { slug } });
   if (!dest) return {};
+  const desc = dest.description.length > 70 ? dest.description.slice(0, 160) : `${dest.description} Explore tours, trekking packages, travel tips, and best time to visit ${dest.name}, Nepal.`;
   return {
     title: `${dest.name} Tours & Treks - Zentara Travels`,
-    description: dest.description.slice(0, 160),
+    description: desc.slice(0, 160),
     openGraph: {
       title: `${dest.name} Tours & Treks - Zentara Travels`,
-      description: dest.description.slice(0, 160),
+      description: desc.slice(0, 160),
       images: [dest.image],
     },
   };
@@ -122,7 +123,7 @@ export default async function DestinationPage({ params }: PageProps) {
               No packages available for {dest.name} yet. Check back soon!
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {packages.map((pkg) => (
                 <PackageCard
                   key={pkg.id}
@@ -132,10 +133,11 @@ export default async function DestinationPage({ params }: PageProps) {
                   price={pkg.price}
                   duration={pkg.duration}
                   imageUrl={pkg.imageUrl}
-                  maxGroupSize={pkg.maxGroupSize}
+                  category={pkg.category}
                   tag={pkg.tag}
                   rating={pkg.rating}
                   reviewCount={pkg.reviewCount}
+                  highlights={(pkg.highlights as string[]) ?? []}
                 />
               ))}
             </div>

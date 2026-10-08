@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { isPrismaError } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(review, { status: 201 });
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "code" in e && e.code === "P2002") {
+    if (isPrismaError(e, "P2002")) {
       return NextResponse.json({ error: "You already reviewed this package" }, { status: 409 });
     }
     throw e;

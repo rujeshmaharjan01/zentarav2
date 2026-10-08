@@ -20,7 +20,7 @@ export const PackageSchema = z.object({
   images: z.array(z.string()).optional(),
 });
 
-export type PackageInput = z.infer<typeof PackageSchema>;
+type PackageInput = z.infer<typeof PackageSchema>;
 
 export function buildPackageData(b: PackageInput) {
   return {

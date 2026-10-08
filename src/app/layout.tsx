@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     default: "Zentara Travels - Nepal Tours & Trekking",
     template: "%s | Zentara Travels",
   },
-  description: "Discover Nepal's majestic Himalayas with expert-guided treks and tours. Everest Base Camp, Annapurna Circuit, Chitwan Safari, and more. Book your dream adventure today.",
+  description: "Discover Nepal's majestic Himalayas with expert-guided treks and tours. Everest Base Camp, Annapurna Circuit, Chitwan Safari. Book your dream adventure.",
   keywords: ["Nepal trekking", "Everest Base Camp", "Annapurna Circuit", "Nepal tours", "Himalayan adventure", "Kathmandu", "Pokhara", "Chitwan Safari"],
   openGraph: {
     type: "website",

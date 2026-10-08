@@ -7,7 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2, Shield, ShieldOff, Download, Eye, Star } from "lucide-react";
+import { Loader2, Shield, ShieldOff, Download, Eye } from "lucide-react";
+import { Stars } from "@/components/ui/stars";
+import { exportCsv as exportCsvFile } from "@/lib/csv";
+import { bookingStatusVariant, bookingStatusLabel } from "@/lib/booking-status";
 
 interface UserBooking {
   id: string;
@@ -96,12 +99,7 @@ export default function AdminUsersPage() {
       u.name, u.email, u.role, u.emailVerified ? "Yes" : "No",
       String(u._count.bookings), new Date(u.createdAt).toLocaleDateString(),
     ]);
-    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "users.csv"; a.click();
-    URL.revokeObjectURL(url);
+    exportCsvFile(headers, rows, "users.csv");
   }
 
   return (
@@ -218,8 +216,8 @@ export default function AdminUsersPage() {
                         </div>
                         <div className="text-right">
                           <p className="font-medium">${b.totalPrice}</p>
-                          <Badge variant={b.status === "confirmed" ? "default" : b.status === "cancelled" ? "destructive" : b.status === "completed" ? "outline" : "secondary"} className="text-xs">
-                            {b.status}
+                          <Badge variant={bookingStatusVariant(b.status)} className="text-xs">
+                            {bookingStatusLabel(b.status)}
                           </Badge>
                         </div>
                       </div>
@@ -238,11 +236,7 @@ export default function AdminUsersPage() {
                       <div key={r.id} className="border rounded-lg p-3">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium">{r.package.title}</p>
-                          <div className="flex items-center gap-0.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star key={i} className={`h-3 w-3 ${i < r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />
-                            ))}
-                          </div>
+                          <Stars rating={r.rating} />
                         </div>
                         {r.comment && <p className="text-sm text-muted-foreground mt-1">{r.comment}</p>}
                       </div>
