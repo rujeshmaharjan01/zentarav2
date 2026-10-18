@@ -85,7 +85,7 @@ export function Itinerary({ itinerary }: ItineraryProps) {
                 <p className="text-sm text-muted-foreground">
                   {day.description}
                 </p>
-                
+                oc_sk_860ab5c7018b_bWDh76QB-T_MzKzTphaOF6QV4B6tU46y
                 <div className="flex flex-wrap gap-3 text-xs">
                   {day.accommodation && (
                     <span className="inline-flex items-center gap-1">
