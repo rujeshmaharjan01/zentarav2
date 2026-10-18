@@ -3,119 +3,105 @@
 import { useState } from "react";
 import {
   Accordion,
+  AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent,
 } from "@/components/ui/accordion";
-import { MapPin, Utensils, Hotel, Route } from "lucide-react";
+import { Hotel, MapPin, Route, Utensils } from "lucide-react";
 import type { ItineraryDay } from "@/lib/types";
 
-interface ItineraryProps {
-  itinerary: ItineraryDay[];
-}
-
-export function Itinerary({ itinerary }: ItineraryProps) {
-  const [value, setValue] = useState<string[]>(["day-1"]);
-
-  function expandAll() {
-    setValue(itinerary.map((d) => `day-${d.day}`));
-  }
-
-  function collapseAll() {
-    setValue([]);
-  }
+export function Itinerary({ itinerary }: { itinerary: ItineraryDay[] }) {
+  const [openDays, setOpenDays] = useState<string[]>(["day-1"]);
 
   if (!itinerary.length) return null;
 
   return (
     <div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-4 text-xs">
         <button
-          onClick={expandAll}
-          className="text-xs text-primary hover:underline"
+          type="button"
+          onClick={() => setOpenDays(itinerary.map((d) => `day-${d.day}`))}
+          className="text-primary hover:underline"
         >
           Show all
         </button>
-        <span className="text-muted-foreground text-xs">·</span>
+        <span className="text-muted-foreground">·</span>
         <button
-          onClick={collapseAll}
-          className="text-xs text-primary hover:underline"
+          type="button"
+          onClick={() => setOpenDays([])}
+          className="text-primary hover:underline"
         >
           Hide all
         </button>
       </div>
 
-      <Accordion multiple value={value} onValueChange={setValue}>
-        {itinerary.map((day) => (
-          <AccordionItem
-            key={day.day}
-            value={`day-${day.day}`}
-            className="border rounded-lg mb-2"
-          >
-            <AccordionTrigger className="px-4 py-4 min-h-14">
-              <div className="font-medium text-foreground text-sm">
-                {day.title}
-              </div>
+      <Accordion multiple value={openDays} onValueChange={setOpenDays}>
+        {itinerary.map((day) => {
+          const meta = [
+            day.overnight,
+            day.elevation,
+            day.trekTime || day.driveTime,
+          ]
+            .filter(Boolean)
+            .join(" – ");
 
-              <div className="flex items-center gap-3 flex-1 min-w-0 text-left">
-                  {day.title}
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold">
-                  {day.day}
+          return (
+            <AccordionItem
+              key={day.day}
+              value={`day-${day.day}`}
+              className="border rounded-lg mb-2"
+            >
+              <AccordionTrigger className="items-center px-4 py-4 min-h-14">
+                <span className="flex flex-1 min-w-0 items-center gap-2 text-left">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                    {day.day}
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="text-sm font-medium text-foreground">
+                      {day.title}
+                    </span>
+                    {meta && (
+                      <span className="text-xs text-muted-foreground">
+                        {meta}
+                      </span>
+                    )}
+                  </span>
                 </span>
-                <div className="flex-1 min-w-0">
-                  {(() => {
-                    const parts = [
-                      day.overnight,
-                      day.elevation,
-                      day.trekTime || day.driveTime,
-                    ].filter(Boolean);
-                    return parts.length > 0 ? (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {parts.join(" – ")}
-                      </p>
-                    ) : null;
-                  })()}
-                </div>
-            <div className="font-medium text-foreground text-sm">{day.title}</div>
-
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <div className="space-y-3">
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
                 <p className="text-sm text-muted-foreground">
                   {day.description}
                 </p>
-                oc_sk_860ab5c7018b_bWDh76QB-T_MzKzTphaOF6QV4B6tU46y
-                <div className="flex flex-wrap gap-3 text-xs">
+                <div className="flex flex-wrap gap-3 text-xs mt-3">
                   {day.accommodation && (
                     <span className="inline-flex items-center gap-1">
-                      <Hotel className="h-3 w-3 text-muted-foreground" />{" "}
+                      <Hotel className="h-3 w-3 text-muted-foreground" />
                       {day.accommodation}
                     </span>
                   )}
                   {day.distance && (
                     <span className="inline-flex items-center gap-1">
-                      <Route className="h-3 w-3 text-muted-foreground" />{" "}
+                      <Route className="h-3 w-3 text-muted-foreground" />
                       {day.distance}
                     </span>
                   )}
                   {day.meals && (
                     <span className="inline-flex items-center gap-1">
-                      <Utensils className="h-3 w-3 text-muted-foreground" />{" "}
+                      <Utensils className="h-3 w-3 text-muted-foreground" />
                       {day.meals}
                     </span>
                   )}
                   {day.overnight && (
                     <span className="inline-flex items-center gap-1">
-                      <MapPin className="h-3 w-3 text-muted-foreground" />{" "}
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
                       {day.overnight}
                     </span>
                   )}
                 </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
       </Accordion>
     </div>
   );
